@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { User, Session } from '@supabase/supabase-js';
 
 interface Product {
   id: string;
@@ -39,6 +40,12 @@ interface Alert {
 }
 
 interface StoreState {
+  // Authentication
+  user: User | null;
+  session: Session | null;
+  isAuthenticated: boolean;
+  authLoading: boolean;
+  
   // Data
   products: Product[];
   orders: Order[];
@@ -49,7 +56,12 @@ interface StoreState {
   isConnected: boolean;
   loading: boolean;
   
-  // Actions
+  // Auth Actions
+  setUser: (user: User | null) => void;
+  setSession: (session: Session | null) => void;
+  setAuthLoading: (loading: boolean) => void;
+  
+  // Data Actions
   setProducts: (products: Product[]) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
   addOrder: (order: Order) => void;
@@ -62,7 +74,13 @@ interface StoreState {
 }
 
 export const useStore = create<StoreState>((set, get) => ({
-  // Initial state
+  // Initial auth state
+  user: null,
+  session: null,
+  isAuthenticated: false,
+  authLoading: true,
+  
+  // Initial data state
   products: [],
   orders: [],
   kpis: {
@@ -77,7 +95,21 @@ export const useStore = create<StoreState>((set, get) => ({
   isConnected: false,
   loading: false,
 
-  // Actions
+  // Auth actions
+  setUser: (user) => set({ 
+    user, 
+    isAuthenticated: !!user 
+  }),
+  
+  setSession: (session) => set({ 
+    session,
+    user: session?.user || null,
+    isAuthenticated: !!session?.user
+  }),
+  
+  setAuthLoading: (authLoading) => set({ authLoading }),
+
+  // Data actions
   setProducts: (products) => set({ products }),
   
   updateProduct: (id, updates) => set((state) => ({

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
+import { useAuth } from './hooks/useAuth';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import AdvancedDashboard from './pages/AdvancedDashboard';
@@ -9,6 +10,21 @@ import DescriptionGenerator from './pages/DescriptionGenerator';
 import Navigation from './components/Navigation';
 
 function App() {
+  // Initialize auth listener
+  const { authLoading } = useAuth();
+
+  // Show loading screen while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
