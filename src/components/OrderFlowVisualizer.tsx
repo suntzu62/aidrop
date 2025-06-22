@@ -27,7 +27,19 @@ const OrderFlowVisualizer = () => {
   const loadOrders = async () => {
     try {
       const data = await orderService.getOrders();
-      data.forEach((order: any) => addOrder(order));
+      // Clear existing orders and add new ones
+      data.forEach((order: any) => {
+        addOrder({
+          id: order.id,
+          productId: order.product_id,
+          buyerName: order.buyer_name,
+          amount: order.amount,
+          status: order.status,
+          createdAt: order.created_at,
+          trackingCode: order.tracking_code,
+          platform: order.platform
+        });
+      });
     } catch (error) {
       console.error('Error loading orders:', error);
     }
@@ -37,7 +49,10 @@ const OrderFlowVisualizer = () => {
     setProcessing(orderId);
     try {
       const result = await orderService.processOrder(orderId);
-      updateOrder(orderId, result);
+      updateOrder(orderId, {
+        status: result.status,
+        trackingCode: result.tracking_code
+      });
     } catch (error) {
       console.error('Error processing order:', error);
     } finally {
@@ -132,6 +147,11 @@ const OrderFlowVisualizer = () => {
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
                         {getStatusText(order.status)}
                       </span>
+                      {order.platform && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                          {order.platform}
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center space-x-4 mt-1 text-sm text-gray-500">
                       <div className="flex items-center">

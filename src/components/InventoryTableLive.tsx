@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Package, TrendingUp, TrendingDown, AlertTriangle, FolderSync as Sync, Edit3, ExternalLink } from 'lucide-react';
+import { Package, TrendingUp, AlertTriangle, Edit3, ExternalLink, RefreshCw } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { inventoryService } from '../services/api';
 import { format } from 'date-fns';
 
 const InventoryTableLive = () => {
   const { products, isConnected, setProducts, updateProduct } = useStore();
-  const [syncing, setSyncing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<{ price: number; stock: number }>({ price: 0, stock: 0 });
 
@@ -16,24 +16,19 @@ const InventoryTableLive = () => {
   }, []);
 
   const loadProducts = async () => {
+    setLoading(true);
     try {
       const data = await inventoryService.getProducts();
       setProducts(data);
     } catch (error) {
       console.error('Error loading products:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSync = async () => {
-    setSyncing(true);
-    try {
-      await inventoryService.syncProducts();
-      await loadProducts();
-    } catch (error) {
-      console.error('Error syncing products:', error);
-    } finally {
-      setSyncing(false);
-    }
+  const handleRefresh = async () => {
+    await loadProducts();
   };
 
   const handleEdit = (product: any) => {
@@ -68,12 +63,12 @@ const InventoryTableLive = () => {
           </div>
           
           <button
-            onClick={handleSync}
-            disabled={syncing}
+            onClick={handleRefresh}
+            disabled={loading}
             className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
           >
-            <Sync className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
-            <span>{syncing ? 'Sincronizando...' : 'Sincronizar'}</span>
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <span>{loading ? 'Carregando...' : 'Atualizar'}</span>
           </button>
         </div>
       </div>
@@ -84,6 +79,9 @@ const InventoryTableLive = () => {
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Produto
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Plataforma
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Preço
@@ -132,6 +130,12 @@ const InventoryTableLive = () => {
                   </td>
                   
                   <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {product.platform || 'N/A'}
+                    </span>
+                  </td>
+                  
+                  <td className="px-6 py-4 whitespace-nowrap">
                     {isEditing ? (
                       <input
                         type="number"
@@ -169,7 +173,7 @@ const InventoryTableLive = () => {
                   
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <span className="text-sm text-gray-900">{product.sold}</span>
+                      <span className="text-sm text-gray-900">{product.sold || 0}</span>
                       <TrendingUp className="w-4 h-4 text-green-500 ml-2" />
                     </div>
                   </td>
@@ -186,7 +190,7 @@ const InventoryTableLive = () => {
                   </td>
                   
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(new Date(product.lastSync), 'dd/MM HH:mm')}
+                    {product.last_sync ? format(new Date(product.last_sync), 'dd/MM HH:mm') : 'N/A'}
                   </td>
                   
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -228,15 +232,15 @@ const InventoryTableLive = () => {
         </table>
       </div>
       
-      {products.length === 0 && (
+      {products.length === 0 && !loading && (
         <div className="text-center py-12">
           <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-500">Nenhum produto encontrado</p>
           <button
-            onClick={handleSync}
+            onClick={handleRefresh}
             className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
           >
-            Sincronizar produtos
+            Carregar produtos
           </button>
         </div>
       )}

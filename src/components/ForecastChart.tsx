@@ -79,7 +79,8 @@ const ForecastChart = () => {
           recommendedStock: 25,
           priority: 'medium',
           recommendation: 'Recomendamos aumentar o estoque em 10 unidades baseado na previsão de vendas.',
-          stockoutDate: '2024-02-15'
+          stockoutDate: '2024-02-15',
+          platform: 'Mercado Livre'
         },
         {
           productTitle: 'Notebook Dell Inspiron 15',
@@ -87,7 +88,8 @@ const ForecastChart = () => {
           recommendedStock: 15,
           priority: 'high',
           recommendation: 'Estoque crítico! Reabasteça urgentemente para evitar perda de vendas.',
-          stockoutDate: '2024-01-25'
+          stockoutDate: '2024-01-25',
+          platform: 'Amazon'
         }
       ]);
     }
@@ -290,14 +292,21 @@ const ForecastChart = () => {
                     <h3 className="text-sm font-medium text-gray-900">
                       {rec.productTitle}
                     </h3>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      rec.priority === 'high' ? 'bg-red-100 text-red-800' :
-                      rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
-                      {rec.priority === 'high' ? 'Urgente' :
-                       rec.priority === 'medium' ? 'Médio' : 'Baixo'}
-                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        rec.priority === 'high' ? 'bg-red-100 text-red-800' :
+                        rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        {rec.priority === 'high' ? 'Urgente' :
+                         rec.priority === 'medium' ? 'Médio' : 'Baixo'}
+                      </span>
+                      {rec.platform && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {rec.platform}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   
                   <p className="text-sm text-gray-600 mt-1">

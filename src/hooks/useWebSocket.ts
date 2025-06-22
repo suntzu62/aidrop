@@ -25,11 +25,11 @@ export const useWebSocket = () => {
         setConnectionStatus(true);
         toast.success('Conectado ao sistema em tempo real');
         
-        // Subscribe to real-time updates
+        // Subscribe to real-time updates with new message format
         if (ws.current?.readyState === WebSocket.OPEN) {
           ws.current.send(JSON.stringify({ 
-            type: 'SUBSCRIBE', 
-            channels: ['inventory', 'orders', 'analytics'] 
+            type: 'subscribe', 
+            channels: ['inventory', 'orders', 'analytics', 'alerts'] 
           }));
         }
       };
@@ -37,59 +37,81 @@ export const useWebSocket = () => {
       ws.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+          console.log('WebSocket message received:', data);
           
           switch (data.type) {
-            case 'INITIAL_DATA':
-              // Handle initial data load
-              if (data.payload.kpis) {
-                setKPIs(data.payload.kpis);
+            case 'connection':
+              console.log('WebSocket connection confirmed:', data.message);
+              break;
+              
+            case 'subscribed':
+              console.log('Subscribed to channels:', data.channels);
+              break;
+              
+            case 'product_updated':
+              if (data.product) {
+                updateProduct(data.product.id, data.product);
+                toast.success(`Produto atualizado: ${data.product.title}`);
               }
               break;
               
-            case 'PRODUCT_UPDATE':
-            case 'PRODUCT_SYNC':
-              if (Array.isArray(data.payload)) {
-                // Handle multiple products
-                data.payload.forEach((product: any) => {
-                  updateProduct(product.id, product);
+            case 'order_updated':
+              if (data.order) {
+                updateOrder(data.order.id, data.order);
+                toast.info(`Pedido atualizado: ${data.order.id.slice(-8)}`);
+              }
+              break;
+              
+            case 'webhook_processed':
+              // Handle webhook processing results
+              if (data.results?.processed?.length > 0) {
+                data.results.processed.forEach((item: any) => {
+                  if (item.type === 'product') {
+                    toast.success('Produto sincronizado via webhook');
+                  } else if (item.type === 'order') {
+                    toast.success('Novo pedido recebido via webhook');
+                  }
                 });
-              } else {
-                updateProduct(data.payload.id, data.payload);
               }
-              toast.success(`Produtos atualizados`);
               break;
               
-            case 'NEW_ORDER':
-              addOrder(data.payload);
-              toast.success(`Nova venda: ${data.payload.buyerName}`);
-              break;
-              
-            case 'ORDER_STATUS_UPDATE':
-              updateOrder(data.payload.id, { status: data.payload.status });
-              toast.info(`Pedido ${data.payload.id.slice(-8)} - ${data.payload.status}`);
-              break;
-              
-            case 'KPI_UPDATE':
-              setKPIs(data.payload);
-              break;
-              
-            case 'ALERT':
-              addAlert({
-                id: Date.now().toString(),
-                ...data.payload,
-                timestamp: new Date(),
-                read: false
-              });
-              
-              if (data.payload.severity === 'high') {
-                toast.error(data.payload.message);
-              } else {
-                toast(data.payload.message);
+            case 'alert':
+              if (data.alert || data.message) {
+                const alert = data.alert || {
+                  id: Date.now().toString(),
+                  type: 'webhook',
+                  message: data.message,
+                  severity: data.severity || 'medium',
+                  timestamp: new Date(),
+                  read: false
+                };
+                
+                addAlert(alert);
+                
+                if (alert.severity === 'high') {
+                  toast.error(alert.message);
+                } else {
+                  toast(alert.message);
+                }
               }
+              break;
+              
+            case 'pong':
+              // Heartbeat response
+              console.log('Heartbeat received');
+              break;
+              
+            case 'response':
+              console.log('WebSocket response:', data);
+              break;
+              
+            case 'error':
+              console.error('WebSocket error message:', data.message);
+              toast.error(`Erro WebSocket: ${data.message}`);
               break;
               
             default:
-              console.log('Unknown message type:', data.type);
+              console.log('Unknown WebSocket message type:', data.type);
           }
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
@@ -144,11 +166,22 @@ export const useWebSocket = () => {
 
   const sendMessage = (type: string, payload: any) => {
     if (ws.current?.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify({ type, payload }));
+      ws.current.send(JSON.stringify({ type, ...payload }));
     } else {
       console.warn('WebSocket not connected, cannot send message:', { type, payload });
     }
   };
+
+  // Send periodic heartbeat
+  useEffect(() => {
+    const heartbeat = setInterval(() => {
+      if (ws.current?.readyState === WebSocket.OPEN) {
+        ws.current.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, 30000); // Every 30 seconds
+
+    return () => clearInterval(heartbeat);
+  }, []);
 
   return { sendMessage };
 };

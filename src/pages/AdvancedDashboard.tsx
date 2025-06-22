@@ -14,7 +14,10 @@ import {
   DollarSign,
   Package,
   ShoppingCart,
-  Zap
+  Zap,
+  Database,
+  Wifi,
+  Server
 } from 'lucide-react';
 
 const AdvancedDashboard = () => {
@@ -22,8 +25,8 @@ const AdvancedDashboard = () => {
   const { sendMessage } = useWebSocket();
 
   useEffect(() => {
-    // Initialize real-time connections
-    sendMessage('SUBSCRIBE', { channels: ['inventory', 'orders', 'analytics'] });
+    // Initialize real-time connections with new message format
+    sendMessage('subscribe', { channels: ['inventory', 'orders', 'analytics', 'alerts'] });
   }, [sendMessage]);
 
   const kpiCards = [
@@ -76,7 +79,7 @@ const AdvancedDashboard = () => {
                 Dashboard Avançado
               </h1>
               <p className="text-lg text-gray-600">
-                Sistema integrado com sincronização em tempo real
+                Sistema integrado com sincronização em tempo real via Supabase
               </p>
             </div>
             
@@ -177,20 +180,46 @@ const AdvancedDashboard = () => {
               
               <div className="flex items-center space-x-6 text-sm">
                 <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-gray-600">API Mercado Livre</span>
+                  <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <Wifi className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-600">WebSocket</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-gray-600">Sincronização</span>
+                  <Database className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-600">Supabase</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-gray-600">Análise Preditiva</span>
+                  <Server className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-600">Backend API</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-gray-600">Chat Automático</span>
+                  <Zap className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-600">n8n Webhooks</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional System Info */}
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Produtos Sincronizados</span>
+                  <span className="font-medium text-gray-900">{products.length}</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Pedidos Ativos</span>
+                  <span className="font-medium text-gray-900">{orders.length}</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Última Sincronização</span>
+                  <span className="font-medium text-gray-900">Agora</span>
                 </div>
               </div>
             </div>

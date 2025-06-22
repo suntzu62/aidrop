@@ -9,7 +9,8 @@ import {
   ShoppingCart,
   CheckCircle,
   Settings,
-  Filter
+  Filter,
+  Webhook
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { notificationService } from '../services/api';
@@ -19,24 +20,52 @@ const AlertCenter = () => {
   const { alerts, markAlertAsRead } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<'all' | 'unread' | 'high'>('all');
-  const [settings, setSettings] = useState({
-    email: true,
-    sms: false,
-    push: true,
-    lowStock: true,
-    highChurn: true,
-    mrDecline: true,
-    newOrders: true
-  });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    loadAlerts();
+  }, []);
+
+  const loadAlerts = async () => {
+    setLoading(true);
+    try {
+      const data = await notificationService.getAlerts();
+      // Transform backend alerts to frontend format
+      const transformedAlerts = data.map((alert: any) => ({
+        id: alert.id,
+        type: alert.type,
+        message: alert.message,
+        severity: alert.severity,
+        timestamp: new Date(alert.created_at),
+        read: alert.read,
+        title: alert.title,
+        source: alert.source,
+        metadata: alert.metadata
+      }));
+      
+      // Add alerts to store (you might want to replace existing alerts)
+      transformedAlerts.forEach((alert: any) => {
+        if (!alerts.find(a => a.id === alert.id)) {
+          useStore.getState().addAlert(alert);
+        }
+      });
+    } catch (error) {
+      console.error('Error loading alerts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const unreadCount = alerts.filter(alert => !alert.read).length;
 
   const getAlertIcon = (type: string) => {
     switch (type) {
-      case 'lowStock': return <Package className="w-5 h-5" />;
+      case 'low_stock': return <Package className="w-5 h-5" />;
+      case 'new_order': return <ShoppingCart className="w-5 h-5" />;
+      case 'new_product': return <Package className="w-5 h-5" />;
+      case 'webhook_data': return <Webhook className="w-5 h-5" />;
       case 'highChurn': return <TrendingDown className="w-5 h-5" />;
       case 'mrDecline': return <TrendingDown className="w-5 h-5" />;
-      case 'newOrder': return <ShoppingCart className="w-5 h-5" />;
       default: return <AlertTriangle className="w-5 h-5" />;
     }
   };
@@ -59,6 +88,18 @@ const AlertCenter = () => {
     }
   };
 
+  const getTypeText = (type: string) => {
+    switch (type) {
+      case 'low_stock': return 'Estoque Baixo';
+      case 'new_order': return 'Novo Pedido';
+      case 'new_product': return 'Novo Produto';
+      case 'webhook_data': return 'Dados Recebidos';
+      case 'highChurn': return 'Churn Alto';
+      case 'mrDecline': return 'Queda na Receita';
+      default: return 'Alerta';
+    }
+  };
+
   const filteredAlerts = alerts.filter(alert => {
     if (filter === 'unread') return !alert.read;
     if (filter === 'high') return alert.severity === 'high';
@@ -71,14 +112,6 @@ const AlertCenter = () => {
       markAlertAsRead(alertId);
     } catch (error) {
       console.error('Error marking alert as read:', error);
-    }
-  };
-
-  const handleUpdateSettings = async () => {
-    try {
-      await notificationService.updateSettings(settings);
-    } catch (error) {
-      console.error('Error updating settings:', error);
     }
   };
 
@@ -117,12 +150,22 @@ const AlertCenter = () => {
                   <h3 className="text-lg font-semibold text-gray-900">
                     Central de Alertas
                   </h3>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-1 text-gray-400 hover:text-gray-600 rounded"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={loadAlerts}
+                      disabled={loading}
+                      className="p-1 text-gray-400 hover:text-gray-600 rounded"
+                      title="Atualizar"
+                    >
+                      <Settings className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                    </button>
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="p-1 text-gray-400 hover:text-gray-600 rounded"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
                 
                 {/* Filters */}
@@ -170,18 +213,28 @@ const AlertCenter = () => {
                           
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <p className="text-sm font-medium text-gray-900 truncate">
-                                {alert.message}
-                              </p>
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getAlertColor(alert.severity)}`}>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">
+                                  {alert.title || getTypeText(alert.type)}
+                                </p>
+                                <p className="text-sm text-gray-600 truncate">
+                                  {alert.message}
+                                </p>
+                              </div>
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${getAlertColor(alert.severity)}`}>
                                 {getSeverityText(alert.severity)}
                               </span>
                             </div>
                             
-                            <div className="flex items-center justify-between mt-1">
-                              <p className="text-xs text-gray-500">
-                                {format(new Date(alert.timestamp), 'dd/MM/yyyy HH:mm')}
-                              </p>
+                            <div className="flex items-center justify-between mt-2">
+                              <div className="flex items-center space-x-2 text-xs text-gray-500">
+                                <span>{format(new Date(alert.timestamp), 'dd/MM/yyyy HH:mm')}</span>
+                                {alert.source && alert.source !== 'system' && (
+                                  <span className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">
+                                    {alert.source}
+                                  </span>
+                                )}
+                              </div>
                               
                               {!alert.read && (
                                 <button
@@ -192,6 +245,15 @@ const AlertCenter = () => {
                                 </button>
                               )}
                             </div>
+
+                            {/* Show platform info if available */}
+                            {alert.metadata?.platform && (
+                              <div className="mt-1">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                  {alert.metadata.platform}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </motion.div>
@@ -210,15 +272,12 @@ const AlertCenter = () => {
                 )}
               </div>
 
-              {/* Settings */}
-              <div className="p-4 border-t border-gray-200">
-                <button
-                  onClick={() => {/* Open settings modal */}}
-                  className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary-600 transition-colors"
-                >
-                  <Settings className="w-4 h-4" />
-                  <span>Configurar notificações</span>
-                </button>
+              {/* Footer */}
+              <div className="p-4 border-t border-gray-200 bg-gray-50">
+                <div className="text-xs text-gray-500 text-center">
+                  {filteredAlerts.length} de {alerts.length} alertas
+                  {loading && ' • Carregando...'}
+                </div>
               </div>
             </motion.div>
           )}
