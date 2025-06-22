@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FileText, 
@@ -8,10 +8,22 @@ import {
   Sparkles,
   Target,
   Search,
-  TrendingUp
+  TrendingUp,
+  Lock,
+  Gift
 } from 'lucide-react';
+import { useOnboarding } from '../hooks/useOnboarding';
+import OnboardingForm from '../components/OnboardingForm';
 
 const DescriptionGenerator = () => {
+  const {
+    freeUsesRemaining,
+    isOnboardingComplete,
+    loading: onboardingLoading,
+    consumeFreeUse,
+    completeOnboarding
+  } = useOnboarding();
+
   const [productData, setProductData] = useState({
     title: '',
     category: '',
@@ -23,9 +35,27 @@ const DescriptionGenerator = () => {
 
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showOnboardingForm, setShowOnboardingForm] = useState(false);
+
+  // Check if user should see onboarding form
+  useEffect(() => {
+    if (!onboardingLoading) {
+      setShowOnboardingForm(!isOnboardingComplete && freeUsesRemaining === 0);
+    }
+  }, [isOnboardingComplete, freeUsesRemaining, onboardingLoading]);
 
   const handleGenerate = async () => {
+    if (!isOnboardingComplete && freeUsesRemaining === 0) {
+      setShowOnboardingForm(true);
+      return;
+    }
+
     setIsGenerating(true);
+    
+    // Consume free use if not onboarded
+    if (!isOnboardingComplete) {
+      await consumeFreeUse();
+    }
     
     // Simulate AI generation delay
     setTimeout(() => {
@@ -72,7 +102,23 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
       
       setGeneratedDescription(mockDescription);
       setIsGenerating(false);
+
+      // Show onboarding form after first free use
+      if (!isOnboardingComplete && freeUsesRemaining === 1) {
+        setTimeout(() => {
+          setShowOnboardingForm(true);
+        }, 2000);
+      }
     }, 2000);
+  };
+
+  const handleOnboardingSubmit = async (data: any) => {
+    const success = await completeOnboarding(data);
+    if (success) {
+      setShowOnboardingForm(false);
+      // Optionally redirect or show success message
+    }
+    return success;
   };
 
   const copyToClipboard = () => {
@@ -108,6 +154,28 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
     'Outros'
   ];
 
+  // Show onboarding form if needed
+  if (showOnboardingForm) {
+    return (
+      <OnboardingForm 
+        onSubmit={handleOnboardingSubmit}
+        loading={onboardingLoading}
+      />
+    );
+  }
+
+  // Show loading state
+  if (onboardingLoading) {
+    return (
+      <div className="min-h-screen pt-20 pb-12 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -128,6 +196,29 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Crie descrições otimizadas para SEO que convertem visitantes em compradores em qualquer plataforma de e-commerce
           </p>
+
+          {/* Free Trial Banner */}
+          {!isOnboardingComplete && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto"
+            >
+              <div className="flex items-center justify-center">
+                <Gift className="w-5 h-5 text-green-600 mr-2" />
+                <span className="text-green-800 font-medium">
+                  {freeUsesRemaining > 0 
+                    ? `${freeUsesRemaining} teste gratuito restante` 
+                    : 'Teste gratuito usado'}
+                </span>
+              </div>
+              {freeUsesRemaining === 0 && (
+                <p className="text-sm text-green-700 mt-1">
+                  Complete seu cadastro para acesso ilimitado
+                </p>
+              )}
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Features */}
@@ -252,10 +343,15 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
 
               <button
                 onClick={handleGenerate}
-                disabled={isGenerating || !productData.title}
+                disabled={isGenerating || !productData.title || (!isOnboardingComplete && freeUsesRemaining === 0)}
                 className="w-full bg-gradient-to-r from-primary-600 to-accent-500 text-white py-4 px-6 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                {isGenerating ? (
+                {!isOnboardingComplete && freeUsesRemaining === 0 ? (
+                  <>
+                    <Lock className="w-5 h-5 mr-2" />
+                    Complete o Cadastro
+                  </>
+                ) : isGenerating ? (
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -265,8 +361,18 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                 ) : (
                   <Zap className="w-5 h-5 mr-2" />
                 )}
-                {isGenerating ? 'Gerando...' : 'Gerar Descrição'}
+                {!isOnboardingComplete && freeUsesRemaining === 0 
+                  ? 'Complete o Cadastro' 
+                  : isGenerating 
+                    ? 'Gerando...' 
+                    : 'Gerar Descrição'}
               </button>
+
+              {!isOnboardingComplete && freeUsesRemaining > 0 && (
+                <p className="text-sm text-gray-500 text-center">
+                  Após este teste, você precisará se cadastrar para continuar usando
+                </p>
+              )}
             </div>
           </motion.div>
 
@@ -314,6 +420,11 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                   <div className="text-center">
                     <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>Preencha os dados do produto e clique em "Gerar Descrição"</p>
+                    {!isOnboardingComplete && (
+                      <p className="text-sm mt-2">
+                        Você tem {freeUsesRemaining} teste{freeUsesRemaining !== 1 ? 's' : ''} gratuito{freeUsesRemaining !== 1 ? 's' : ''}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
@@ -328,6 +439,11 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                 <p className="text-sm text-green-600 mt-1">
                   Esta descrição foi otimizada para SEO e conversão em plataformas de e-commerce.
                 </p>
+                {!isOnboardingComplete && freeUsesRemaining === 0 && (
+                  <p className="text-sm text-green-600 mt-2 font-medium">
+                    Complete seu cadastro para gerar descrições ilimitadas!
+                  </p>
+                )}
               </div>
             )}
           </motion.div>

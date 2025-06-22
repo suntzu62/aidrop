@@ -260,3 +260,50 @@ export const notificationService = {
     return response.data;
   }
 };
+
+// NEW: Onboarding Service for lead capture
+export const onboardingService = {
+  submitOnboarding: async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    company: string;
+  }) => {
+    try {
+      const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://your-n8n-instance.com/webhook/lead-signup';
+      
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          company: data.company,
+          timestamp: new Date().toISOString(),
+          source: 'description_generator',
+          utm_source: 'mlboost_app',
+          utm_medium: 'onboarding_form',
+          utm_campaign: 'free_trial_conversion'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('Onboarding webhook success:', result);
+      
+      return {
+        success: true,
+        data: result
+      };
+    } catch (error) {
+      console.error('Onboarding webhook error:', error);
+      throw error;
+    }
+  }
+};
