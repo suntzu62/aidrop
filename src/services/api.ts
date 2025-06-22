@@ -46,22 +46,24 @@ const getFallbackData = (url?: string) => {
   if (url?.includes('/inventory/products')) {
     return [
       {
-        id: 'MLB123456789',
+        id: 'PROD123456789',
         title: 'Smartphone Samsung Galaxy A54 128GB',
         price: 1299.99,
         stock: 15,
         sold: 45,
         status: 'active',
-        lastSync: new Date()
+        lastSync: new Date(),
+        platform: 'Mercado Livre'
       },
       {
-        id: 'MLB987654321',
+        id: 'PROD987654321',
         title: 'Notebook Dell Inspiron 15 3000',
         price: 2499.99,
         stock: 3,
         sold: 12,
         status: 'active',
-        lastSync: new Date()
+        lastSync: new Date(),
+        platform: 'Shopee'
       }
     ];
   }
@@ -70,12 +72,13 @@ const getFallbackData = (url?: string) => {
     return [
       {
         id: 'ORD001',
-        productId: 'MLB123456789',
+        productId: 'PROD123456789',
         buyerName: 'João Silva',
         amount: 1299.99,
         status: 'pending',
         createdAt: new Date(),
-        trackingCode: null
+        trackingCode: null,
+        platform: 'Mercado Livre'
       }
     ];
   }
@@ -110,7 +113,8 @@ const getFallbackData = (url?: string) => {
         recommendedStock: 25,
         priority: 'medium',
         recommendation: 'Recomendamos aumentar o estoque em 10 unidades baseado na previsão de vendas.',
-        stockoutDate: '2024-02-15'
+        stockoutDate: '2024-02-15',
+        platform: 'Mercado Livre'
       }
     ];
   }
@@ -185,7 +189,7 @@ export const analyticsService = {
 
 // Chat Support Service
 export const chatService = {
-  sendMessage: async (message: string, channel: 'whatsapp' | 'mercadolivre') => {
+  sendMessage: async (message: string, channel: 'whatsapp' | 'plataforma') => {
     try {
       const response = await api.post('/chat/send', { message, channel });
       return response.data;

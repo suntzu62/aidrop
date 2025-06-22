@@ -14,52 +14,57 @@ app.use(express.json());
 // Mock data
 let products = [
   {
-    id: 'MLB123456789',
+    id: 'PROD123456789',
     title: 'Smartphone Samsung Galaxy A54 128GB',
     price: 1299.99,
     stock: 15,
     sold: 45,
     status: 'active',
-    lastSync: new Date()
+    lastSync: new Date(),
+    platform: 'Mercado Livre'
   },
   {
-    id: 'MLB987654321',
+    id: 'PROD987654321',
     title: 'Notebook Dell Inspiron 15 3000',
     price: 2499.99,
     stock: 3,
     sold: 12,
     status: 'active',
-    lastSync: new Date()
+    lastSync: new Date(),
+    platform: 'Shopee'
   },
   {
-    id: 'MLB456789123',
+    id: 'PROD456789123',
     title: 'Fone Bluetooth JBL Tune 510BT',
     price: 199.99,
     stock: 0,
     sold: 89,
     status: 'paused',
-    lastSync: new Date()
+    lastSync: new Date(),
+    platform: 'Amazon'
   }
 ];
 
 let orders = [
   {
     id: 'ORD001',
-    productId: 'MLB123456789',
+    productId: 'PROD123456789',
     buyerName: 'João Silva',
     amount: 1299.99,
     status: 'pending',
     createdAt: new Date(),
-    trackingCode: null
+    trackingCode: null,
+    platform: 'Mercado Livre'
   },
   {
     id: 'ORD002',
-    productId: 'MLB987654321',
+    productId: 'PROD987654321',
     buyerName: 'Maria Santos',
     amount: 2499.99,
     status: 'confirmed',
     createdAt: new Date(Date.now() - 3600000),
-    trackingCode: 'BR123456789'
+    trackingCode: 'BR123456789',
+    platform: 'Shopee'
   }
 ];
 
@@ -119,7 +124,7 @@ app.get('/api/inventory/products', (req, res) => {
 });
 
 app.get('/api/inventory/sync', (req, res) => {
-  // Simulate sync with MercadoLibre API
+  // Simulate sync with e-commerce platforms
   products = products.map(product => ({
     ...product,
     stock: Math.max(0, product.stock + Math.floor(Math.random() * 10) - 5),
@@ -224,7 +229,8 @@ app.get('/api/analytics/stock-recommendations', (req, res) => {
       recommendedStock: 25,
       priority: 'medium',
       recommendation: 'Recomendamos aumentar o estoque em 10 unidades baseado na previsão de vendas.',
-      stockoutDate: '2024-02-15'
+      stockoutDate: '2024-02-15',
+      platform: 'Mercado Livre'
     },
     {
       productTitle: 'Notebook Dell Inspiron 15',
@@ -232,7 +238,8 @@ app.get('/api/analytics/stock-recommendations', (req, res) => {
       recommendedStock: 15,
       priority: 'high',
       recommendation: 'Estoque crítico! Reabasteça urgentemente para evitar perda de vendas.',
-      stockoutDate: '2024-01-25'
+      stockoutDate: '2024-01-25',
+      platform: 'Shopee'
     }
   ];
   
@@ -307,7 +314,7 @@ setInterval(() => {
           type: 'ALERT',
           payload: {
             type: 'lowStock',
-            message: `${randomProduct.title} está com estoque baixo (${randomProduct.stock})`,
+            message: `${randomProduct.title} está com estoque baixo (${randomProduct.stock}) na ${randomProduct.platform}`,
             severity: randomProduct.stock === 0 ? 'high' : 'medium'
           }
         });
@@ -317,6 +324,7 @@ setInterval(() => {
   
   // Random new orders
   if (Math.random() < 0.1) {
+    const platforms = ['Mercado Livre', 'Shopee', 'Amazon', 'Magazine Luiza'];
     const newOrder = {
       id: `ORD${Date.now()}`,
       productId: products[Math.floor(Math.random() * products.length)].id,
@@ -324,7 +332,8 @@ setInterval(() => {
       amount: Math.floor(Math.random() * 2000) + 100,
       status: 'pending',
       createdAt: new Date(),
-      trackingCode: null
+      trackingCode: null,
+      platform: platforms[Math.floor(Math.random() * platforms.length)]
     };
     
     orders.unshift(newOrder);

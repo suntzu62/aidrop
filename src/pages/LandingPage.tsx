@@ -18,37 +18,37 @@ const LandingPage = () => {
     {
       icon: FileText,
       title: 'Descrições com IA',
-      description: 'Gere descrições SEO otimizadas em segundos com inteligência artificial avançada.'
+      description: 'Gere descrições SEO otimizadas em segundos com inteligência artificial avançada para qualquer plataforma.'
     },
     {
       icon: BarChart3,
       title: 'KPIs em Tempo Real',
-      description: 'Acompanhe MRR, Churn, CAC, CLV e outras métricas essenciais para seu negócio.'
+      description: 'Acompanhe MRR, Churn, CAC, CLV e outras métricas essenciais para seu negócio online.'
     },
     {
       icon: TrendingUp,
       title: 'Otimização de Vendas',
-      description: 'Maximize suas conversões com análises preditivas e insights acionáveis.'
+      description: 'Maximize suas conversões com análises preditivas e insights acionáveis para e-commerce.'
     }
   ];
 
   const testimonials = [
     {
       name: 'Carlos Silva',
-      role: 'Vendedor Premium ML',
+      role: 'Vendedor E-commerce',
       content: 'Minhas vendas aumentaram 300% desde que comecei a usar o MLBoost. As descrições geradas são incríveis!',
       rating: 5
     },
     {
       name: 'Ana Rodrigues',
-      role: 'Loja Oficial',
+      role: 'Loja Online',
       content: 'O dashboard de KPIs me ajudou a entender meu negócio de verdade. Agora tomo decisões baseadas em dados.',
       rating: 5
     },
     {
       name: 'Pedro Santos',
       role: 'Empreendedor Digital',
-      content: 'Interface intuitiva e resultados reais. Recomendo para qualquer vendedor sério no Mercado Livre.',
+      content: 'Interface intuitiva e resultados reais. Recomendo para qualquer vendedor sério no e-commerce.',
       rating: 5
     }
   ];
@@ -62,7 +62,7 @@ const LandingPage = () => {
         '50 descrições por mês',
         'Dashboard básico',
         'Suporte por email',
-        'Integração ML'
+        'Integração com plataformas'
       ]
     },
     {
@@ -107,11 +107,11 @@ const LandingPage = () => {
               className="mb-8"
             >
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Turbine suas vendas no
-                <span className="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent"> Mercado Livre</span>
+                Turbine suas vendas
+                <span className="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent"> online</span>
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-                Gere descrições SEO otimizadas com IA e acompanhe seus KPIs em tempo real para maximizar suas vendas e lucros.
+                Gere descrições SEO otimizadas com IA e acompanhe seus KPIs em tempo real para maximizar suas vendas em qualquer plataforma de e-commerce.
               </p>
             </motion.div>
 
@@ -169,7 +169,7 @@ const LandingPage = () => {
               Tudo que você precisa para vender mais
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Ferramentas poderosas de IA e analytics para otimizar cada aspecto das suas vendas no Mercado Livre.
+              Ferramentas poderosas de IA e analytics para otimizar cada aspecto das suas vendas online em qualquer plataforma.
             </p>
           </div>
 
@@ -310,7 +310,7 @@ const LandingPage = () => {
               Pronto para turbinar suas vendas?
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Junte-se a mais de 1.000 vendedores que já transformaram seus negócios com o MLBoost.
+              Junte-se a mais de 1.000 vendedores que já transformaram seus negócios online com o MLBoost.
             </p>
             <Link
               to="/generator"

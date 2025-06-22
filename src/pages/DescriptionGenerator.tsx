@@ -17,7 +17,8 @@ const DescriptionGenerator = () => {
     category: '',
     price: '',
     features: '',
-    keywords: ''
+    keywords: '',
+    platform: ''
   });
 
   const [generatedDescription, setGeneratedDescription] = useState('');
@@ -48,7 +49,7 @@ Este produto foi cuidadosamente selecionado para oferecer a melhor experiência 
 
 ## 🚚 Entrega e Garantia
 
-• **Entrega expressa:** Receba em até 48h na Grande São Paulo
+• **Entrega expressa:** Receba rapidamente em sua região
 • **Frete grátis:** Para compras acima de R$ 99
 • **Garantia total:** 12 meses de garantia do fabricante
 • **Troca fácil:** 30 dias para trocar sem perguntas
@@ -58,12 +59,13 @@ Este produto foi cuidadosamente selecionado para oferecer a melhor experiência 
 ${productData.keywords ? `**Palavras-chave:** ${productData.keywords}` : ''}
 ${productData.category ? `**Categoria:** ${productData.category}` : ''}
 ${productData.price ? `**Preço especial:** R$ ${productData.price}` : ''}
+${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
 
 ---
 
 ⭐ **Avaliação 4.9/5** - Mais de 1.000 clientes satisfeitos
 🏆 **Vendedor Premium** - Loja oficial com mais de 10 anos de experiência
-🔒 **Compra 100% segura** - Proteção total do Mercado Livre
+🔒 **Compra 100% segura** - Proteção total da plataforma
 
 **Aproveite esta oferta especial!** ⚡
       `.trim();
@@ -81,18 +83,29 @@ ${productData.price ? `**Preço especial:** R$ ${productData.price}` : ''}
     {
       icon: Search,
       title: 'SEO Otimizado',
-      description: 'Palavras-chave estratégicas para melhor rankeamento'
+      description: 'Palavras-chave estratégicas para melhor rankeamento em qualquer plataforma'
     },
     {
       icon: Target,
       title: 'Conversão Focada',
-      description: 'CTAs poderosos que aumentam as vendas'
+      description: 'CTAs poderosos que aumentam as vendas em e-commerce'
     },
     {
       icon: TrendingUp,
       title: 'Performance',
-      description: 'Baseado em dados de produtos de alta performance'
+      description: 'Baseado em dados de produtos de alta performance online'
     }
+  ];
+
+  const platforms = [
+    'Mercado Livre',
+    'Shopee',
+    'Amazon',
+    'Magazine Luiza',
+    'Americanas',
+    'Casas Bahia',
+    'Loja Própria',
+    'Outros'
   ];
 
   return (
@@ -113,7 +126,7 @@ ${productData.price ? `**Preço especial:** R$ ${productData.price}` : ''}
             </h1>
           </div>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Crie descrições otimizadas para SEO que convertem visitantes em compradores
+            Crie descrições otimizadas para SEO que convertem visitantes em compradores em qualquer plataforma de e-commerce
           </p>
         </motion.div>
 
@@ -161,6 +174,22 @@ ${productData.price ? `**Preço especial:** R$ ${productData.price}` : ''}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Ex: Smartphone Samsung Galaxy A54"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Plataforma de Venda
+                </label>
+                <select
+                  value={productData.platform}
+                  onChange={(e) => setProductData({...productData, platform: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="">Selecione uma plataforma</option>
+                  {platforms.map((platform) => (
+                    <option key={platform} value={platform}>{platform}</option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -297,7 +326,7 @@ ${productData.price ? `**Preço especial:** R$ ${productData.price}` : ''}
                   <span className="font-medium">Descrição otimizada criada com sucesso!</span>
                 </div>
                 <p className="text-sm text-green-600 mt-1">
-                  Esta descrição foi otimizada para SEO e conversão no Mercado Livre.
+                  Esta descrição foi otimizada para SEO e conversão em plataformas de e-commerce.
                 </p>
               </div>
             )}

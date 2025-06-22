@@ -8,7 +8,8 @@ import {
   User,
   Phone,
   MessageSquare,
-  Clock
+  Clock,
+  ShoppingCart
 } from 'lucide-react';
 import { chatService } from '../services/api';
 
@@ -17,7 +18,7 @@ interface Message {
   text: string;
   sender: 'user' | 'bot' | 'agent';
   timestamp: Date;
-  channel: 'whatsapp' | 'mercadolivre' | 'internal';
+  channel: 'whatsapp' | 'plataforma' | 'internal';
 }
 
 const ChatWidget = () => {
@@ -33,7 +34,7 @@ const ChatWidget = () => {
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [activeChannel, setActiveChannel] = useState<'whatsapp' | 'mercadolivre' | 'internal'>('internal');
+  const [activeChannel, setActiveChannel] = useState<'whatsapp' | 'plataforma' | 'internal'>('internal');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,7 +77,7 @@ const ChatWidget = () => {
 
       // Send to external service if not internal
       if (activeChannel !== 'internal') {
-        await chatService.sendMessage(inputText, activeChannel);
+        await chatService.sendMessage(inputText, activeChannel as any);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -103,13 +104,17 @@ const ChatWidget = () => {
       return 'Posso integrar com WhatsApp para automatizar o atendimento aos seus clientes. Quer que eu configure isso para você?';
     }
     
-    return 'Entendi! Posso ajudar com gestão de estoque, acompanhamento de pedidos, análises de vendas e muito mais. O que você gostaria de saber especificamente?';
+    if (lowerMessage.includes('plataforma') || lowerMessage.includes('marketplace')) {
+      return 'Trabalho com todas as principais plataformas de e-commerce! Posso ajudar com integração e otimização para Mercado Livre, Shopee, Amazon e outras.';
+    }
+    
+    return 'Entendi! Posso ajudar com gestão de estoque, acompanhamento de pedidos, análises de vendas e integração com plataformas de e-commerce. O que você gostaria de saber especificamente?';
   };
 
   const getChannelIcon = (channel: string) => {
     switch (channel) {
       case 'whatsapp': return <Phone className="w-4 h-4" />;
-      case 'mercadolivre': return <MessageSquare className="w-4 h-4" />;
+      case 'plataforma': return <ShoppingCart className="w-4 h-4" />;
       default: return <Bot className="w-4 h-4" />;
     }
   };
@@ -117,8 +122,16 @@ const ChatWidget = () => {
   const getChannelColor = (channel: string) => {
     switch (channel) {
       case 'whatsapp': return 'bg-green-500';
-      case 'mercadolivre': return 'bg-yellow-500';
+      case 'plataforma': return 'bg-blue-500';
       default: return 'bg-primary-500';
+    }
+  };
+
+  const getChannelLabel = (channel: string) => {
+    switch (channel) {
+      case 'whatsapp': return 'WhatsApp';
+      case 'plataforma': return 'Plataforma';
+      default: return 'Interno';
     }
   };
 
@@ -158,7 +171,7 @@ const ChatWidget = () => {
                 
                 {/* Channel Selector */}
                 <div className="flex items-center space-x-1">
-                  {['internal', 'whatsapp', 'mercadolivre'].map((channel) => (
+                  {['internal', 'whatsapp', 'plataforma'].map((channel) => (
                     <button
                       key={channel}
                       onClick={() => setActiveChannel(channel as any)}
@@ -167,8 +180,7 @@ const ChatWidget = () => {
                           ? 'bg-white/20 text-white' 
                           : 'text-white/60 hover:text-white hover:bg-white/10'
                       }`}
-                      title={channel === 'internal' ? 'Chat Interno' : 
-                             channel === 'whatsapp' ? 'WhatsApp' : 'Mercado Livre'}
+                      title={getChannelLabel(channel)}
                     >
                       {getChannelIcon(channel)}
                     </button>
@@ -249,8 +261,7 @@ const ChatWidget = () => {
               </div>
               
               <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
-                <span>Canal: {activeChannel === 'internal' ? 'Interno' : 
-                             activeChannel === 'whatsapp' ? 'WhatsApp' : 'Mercado Livre'}</span>
+                <span>Canal: {getChannelLabel(activeChannel)}</span>
                 <span className="flex items-center">
                   <Clock className="w-3 h-3 mr-1" />
                   Resposta em ~2min
