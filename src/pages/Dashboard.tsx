@@ -9,9 +9,30 @@ import {
   ShoppingCart,
   Calendar,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Store,
+  Target,
+  Crown,
+  UserCheck,
+  UserPlus
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  BarChart, 
+  Bar, 
+  PieChart, 
+  Pie, 
+  Cell,
+  ComposedChart,
+  Area,
+  AreaChart
+} from 'recharts';
 
 const Dashboard = () => {
   // Mock data for charts
@@ -22,6 +43,92 @@ const Dashboard = () => {
     { month: 'Abr', revenue: 6100, customers: 61 },
     { month: 'Mai', revenue: 7300, customers: 73 },
     { month: 'Jun', revenue: 8900, customers: 89 },
+  ];
+
+  // New: Platform Performance Data
+  const platformData = [
+    { 
+      platform: 'Mercado Livre', 
+      revenue: 3200, 
+      orders: 45, 
+      conversion: 3.2,
+      growth: 12.5,
+      color: '#FFE600'
+    },
+    { 
+      platform: 'Shopee', 
+      revenue: 2800, 
+      orders: 38, 
+      conversion: 2.8,
+      growth: 18.3,
+      color: '#EE4D2D'
+    },
+    { 
+      platform: 'Amazon', 
+      revenue: 1900, 
+      orders: 22, 
+      conversion: 4.1,
+      growth: 8.7,
+      color: '#FF9900'
+    },
+    { 
+      platform: 'Magazine Luiza', 
+      revenue: 900, 
+      orders: 12, 
+      conversion: 2.1,
+      growth: 25.4,
+      color: '#0F4C81'
+    }
+  ];
+
+  // New: Customer Segmentation Data
+  const customerSegments = [
+    { 
+      segment: 'Novos Clientes', 
+      count: 245, 
+      clv: 180, 
+      percentage: 35,
+      color: '#22c55e',
+      avgOrderValue: 85,
+      frequency: 1.2
+    },
+    { 
+      segment: 'Clientes Recorrentes', 
+      count: 189, 
+      clv: 450, 
+      percentage: 27,
+      color: '#3b82f6',
+      avgOrderValue: 120,
+      frequency: 3.8
+    },
+    { 
+      segment: 'Clientes VIP', 
+      count: 98, 
+      clv: 890, 
+      percentage: 14,
+      color: '#f59e0b',
+      avgOrderValue: 280,
+      frequency: 8.2
+    },
+    { 
+      segment: 'Clientes Inativos', 
+      count: 168, 
+      clv: 95, 
+      percentage: 24,
+      color: '#ef4444',
+      avgOrderValue: 65,
+      frequency: 0.8
+    }
+  ];
+
+  // CLV Trend Data
+  const clvTrendData = [
+    { month: 'Jan', newCustomers: 180, recurring: 420, vip: 850 },
+    { month: 'Fev', newCustomers: 185, recurring: 435, vip: 870 },
+    { month: 'Mar', newCustomers: 175, recurring: 445, vip: 885 },
+    { month: 'Abr', newCustomers: 180, recurring: 450, vip: 890 },
+    { month: 'Mai', newCustomers: 182, recurring: 448, vip: 895 },
+    { month: 'Jun', newCustomers: 180, recurring: 450, vip: 890 },
   ];
 
   const churnData = [
@@ -81,12 +188,21 @@ const Dashboard = () => {
   ];
 
   const recentActivities = [
-    { type: 'sale', message: 'Nova venda: Smartphone Galaxy A54', time: '2 min atrás' },
-    { type: 'customer', message: 'Novo cliente: João Silva', time: '15 min atrás' },
-    { type: 'description', message: 'Descrição gerada: Notebook Dell', time: '1h atrás' },
-    { type: 'sale', message: 'Nova venda: Fone Bluetooth', time: '2h atrás' },
+    { type: 'sale', message: 'Nova venda: Smartphone Galaxy A54 (Shopee)', time: '2 min atrás' },
+    { type: 'customer', message: 'Novo cliente VIP: João Silva', time: '15 min atrás' },
+    { type: 'description', message: 'Descrição gerada: Notebook Dell (Amazon)', time: '1h atrás' },
+    { type: 'sale', message: 'Nova venda: Fone Bluetooth (Mercado Livre)', time: '2h atrás' },
     { type: 'customer', message: 'Cliente renovou: Maria Santos', time: '3h atrás' },
   ];
+
+  const getSegmentIcon = (segment: string) => {
+    switch (segment) {
+      case 'Novos Clientes': return UserPlus;
+      case 'Clientes Recorrentes': return UserCheck;
+      case 'Clientes VIP': return Crown;
+      default: return Users;
+    }
+  };
 
   return (
     <div className="min-h-screen pt-20 pb-12 bg-gray-50">
@@ -103,7 +219,7 @@ const Dashboard = () => {
                 Dashboard Analytics
               </h1>
               <p className="text-lg text-gray-600">
-                Acompanhe suas métricas em tempo real
+                Acompanhe suas métricas e tendências estratégicas
               </p>
             </div>
             <div className="flex items-center space-x-2 text-sm text-gray-500">
@@ -146,8 +262,8 @@ const Dashboard = () => {
           })}
         </div>
 
+        {/* Revenue Chart and Churn Rate */}
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
-          {/* Revenue Chart */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -181,7 +297,6 @@ const Dashboard = () => {
             </div>
           </motion.div>
 
-          {/* Churn Rate */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -226,11 +341,215 @@ const Dashboard = () => {
           </motion.div>
         </div>
 
-        {/* Recent Activities */}
+        {/* NEW: Platform Performance Analysis */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
+          className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <Store className="w-6 h-6 text-primary-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Desempenho por Plataforma</h3>
+            </div>
+            <div className="text-sm text-gray-500">Últimos 30 dias</div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Platform Revenue Chart */}
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-4">Receita por Plataforma</h4>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={platformData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="platform" angle={-45} textAnchor="end" height={80} />
+                    <YAxis />
+                    <Tooltip formatter={(value) => [`R$ ${value}`, 'Receita']} />
+                    <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Platform Metrics */}
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-4">Métricas Detalhadas</h4>
+              <div className="space-y-4">
+                {platformData.map((platform, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: platform.color }}
+                        ></div>
+                        <span className="font-medium text-gray-900">{platform.platform}</span>
+                      </div>
+                      <span className={`text-sm font-medium ${
+                        platform.growth >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {platform.growth >= 0 ? '+' : ''}{platform.growth}%
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-500">Receita</span>
+                        <p className="font-medium">R$ {platform.revenue.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Pedidos</span>
+                        <p className="font-medium">{platform.orders}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Conversão</span>
+                        <p className="font-medium">{platform.conversion}%</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* NEW: Customer Segmentation and CLV */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <Target className="w-6 h-6 text-accent-500" />
+              <h3 className="text-lg font-semibold text-gray-900">Segmentação de Clientes & CLV</h3>
+            </div>
+            <div className="text-sm text-gray-500">Análise comportamental</div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Customer Segments */}
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-4">Distribuição de Clientes</h4>
+              <div className="space-y-4">
+                {customerSegments.map((segment, index) => {
+                  const Icon = getSegmentIcon(segment.segment);
+                  return (
+                    <div key={index} className="p-4 border border-gray-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div 
+                            className="w-10 h-10 rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: `${segment.color}20`, color: segment.color }}
+                          >
+                            <Icon className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h5 className="font-medium text-gray-900">{segment.segment}</h5>
+                            <p className="text-sm text-gray-500">{segment.count} clientes</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-gray-900">R$ {segment.clv}</p>
+                          <p className="text-xs text-gray-500">CLV médio</p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-500">Ticket Médio</span>
+                          <p className="font-medium">R$ {segment.avgOrderValue}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Frequência</span>
+                          <p className="font-medium">{segment.frequency}x/mês</p>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-3">
+                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                          <span>Participação</span>
+                          <span>{segment.percentage}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="h-2 rounded-full"
+                            style={{ 
+                              width: `${segment.percentage}%`,
+                              backgroundColor: segment.color 
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* CLV Trend */}
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-4">Evolução do CLV por Segmento</h4>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={clvTrendData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip formatter={(value) => [`R$ ${value}`, 'CLV']} />
+                    <Area 
+                      type="monotone" 
+                      dataKey="vip" 
+                      stackId="1" 
+                      stroke="#f59e0b" 
+                      fill="#f59e0b" 
+                      fillOpacity={0.8}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="recurring" 
+                      stackId="1" 
+                      stroke="#3b82f6" 
+                      fill="#3b82f6" 
+                      fillOpacity={0.8}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="newCustomers" 
+                      stackId="1" 
+                      stroke="#22c55e" 
+                      fill="#22c55e" 
+                      fillOpacity={0.8}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+              
+              <div className="flex items-center justify-center space-x-6 mt-4 text-sm">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-gray-600">Novos</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                  <span className="text-gray-600">Recorrentes</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                  <span className="text-gray-600">VIP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Recent Activities */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
           className="bg-white p-6 rounded-xl shadow-sm border border-gray-200"
         >
           <h3 className="text-lg font-semibold text-gray-900 mb-6">Atividades Recentes</h3>
