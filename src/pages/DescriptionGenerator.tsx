@@ -36,6 +36,7 @@ const DescriptionGenerator = () => {
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showOnboardingForm, setShowOnboardingForm] = useState(false);
+  const [displayPrice, setDisplayPrice] = useState('');
 
   // Check if user should see onboarding form
   useEffect(() => {
@@ -43,6 +44,42 @@ const DescriptionGenerator = () => {
       setShowOnboardingForm(!isOnboardingComplete && freeUsesRemaining === 0);
     }
   }, [isOnboardingComplete, freeUsesRemaining, onboardingLoading]);
+
+  // Price formatting functions
+  const formatPrice = (value: string): string => {
+    // Remove tudo exceto números
+    const numbers = value.replace(/\D/g, '');
+    
+    if (!numbers) return '';
+    
+    // Converte para número e divide por 100 para ter centavos
+    const numberValue = parseInt(numbers) / 100;
+    
+    // Formata com separador de milhares e vírgula decimal
+    return numberValue.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const formatted = formatPrice(inputValue);
+    
+    setDisplayPrice(formatted);
+    
+    // Armazena o valor numérico real no estado
+    const numericValue = formatted.replace(/\./g, '').replace(',', '.');
+    setProductData({...productData, price: numericValue});
+  };
+
+  const handlePriceBlur = () => {
+    // Garante formatação final quando o campo perde o foco
+    if (displayPrice) {
+      const formatted = formatPrice(displayPrice);
+      setDisplayPrice(formatted);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!isOnboardingComplete && freeUsesRemaining === 0) {
@@ -88,7 +125,7 @@ Este produto foi cuidadosamente selecionado para oferecer a melhor experiência 
 
 ${productData.keywords ? `**Palavras-chave:** ${productData.keywords}` : ''}
 ${productData.category ? `**Categoria:** ${productData.category}` : ''}
-${productData.price ? `**Preço especial:** R$ ${productData.price}` : ''}
+${displayPrice ? `**Preço especial:** R$ ${displayPrice}` : ''}
 ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
 
 ---
@@ -306,13 +343,22 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Preço (R$)
                 </label>
-                <input
-                  type="number"
-                  value={productData.price}
-                  onChange={(e) => setProductData({...productData, price: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="299.90"
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+                    R$
+                  </span>
+                  <input
+                    type="text"
+                    value={displayPrice}
+                    onChange={handlePriceChange}
+                    onBlur={handlePriceBlur}
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="0,00"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Digite apenas números. A formatação será aplicada automaticamente.
+                </p>
               </div>
 
               <div>
