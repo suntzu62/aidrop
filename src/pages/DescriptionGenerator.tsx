@@ -41,10 +41,10 @@ const DescriptionGenerator = () => {
   // Check if user should see onboarding form
   useEffect(() => {
     if (!onboardingLoading) {
-      // Show onboarding form if not complete
-      setShowOnboardingForm(!isOnboardingComplete);
+      // Show onboarding form if not complete and no free uses remaining
+      setShowOnboardingForm(!isOnboardingComplete && freeUsesRemaining === 0);
     }
-  }, [isOnboardingComplete, onboardingLoading]);
+  }, [isOnboardingComplete, onboardingLoading, freeUsesRemaining]);
 
   // Price formatting functions
   const formatPrice = (value: string): string => {
@@ -91,9 +91,10 @@ const DescriptionGenerator = () => {
 
     setIsGenerating(true);
     
-    // Consume free use if not onboarded
+    // Consume free use if not onboarded and capture the new value
+    let newUsesRemaining = freeUsesRemaining;
     if (!isOnboardingComplete) {
-      await consumeFreeUse();
+      newUsesRemaining = await consumeFreeUse();
     }
     
     // Simulate AI generation delay
@@ -142,11 +143,11 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
       setGeneratedDescription(mockDescription);
       setIsGenerating(false);
 
-      // Show onboarding form after first free use if not complete
-      if (!isOnboardingComplete && freeUsesRemaining === 1) {
+      // Show onboarding form immediately after consuming the free use
+      if (!isOnboardingComplete && newUsesRemaining === 0) {
         setTimeout(() => {
           setShowOnboardingForm(true);
-        }, 2000);
+        }, 1000); // Small delay to let user see the generated description first
       }
     }, 2000);
   };
@@ -247,7 +248,7 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                 <span className="text-green-800 font-medium">
                   {freeUsesRemaining > 0 
                     ? `${freeUsesRemaining} teste gratuito restante` 
-                    : 'Teste gratuito usado'}
+                    : 'Teste gratuito usado - Complete seu cadastro'}
                 </span>
               </div>
               {freeUsesRemaining === 0 && (
@@ -390,7 +391,7 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
 
               <button
                 onClick={handleGenerate}
-                disabled={isGenerating || !productData.title}
+                disabled={isGenerating || !productData.title || (!isOnboardingComplete && freeUsesRemaining === 0)}
                 className="w-full bg-gradient-to-r from-primary-600 to-accent-500 text-white py-4 px-6 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isGenerating ? (
@@ -400,16 +401,37 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                   >
                     <Zap className="w-5 h-5 mr-2" />
                   </motion.div>
+                ) : !isOnboardingComplete && freeUsesRemaining === 0 ? (
+                  <>
+                    <Lock className="w-5 h-5 mr-2" />
+                    Complete o Cadastro
+                  </>
                 ) : (
                   <Zap className="w-5 h-5 mr-2" />
                 )}
-                {isGenerating ? 'Gerando...' : 'Gerar Descrição'}
+                {isGenerating ? 'Gerando...' : 
+                 !isOnboardingComplete && freeUsesRemaining === 0 ? 'Complete o Cadastro' :
+                 'Gerar Descrição'}
               </button>
 
               {!isOnboardingComplete && freeUsesRemaining > 0 && (
                 <p className="text-sm text-gray-500 text-center">
                   Após este teste, você precisará se cadastrar para continuar usando
                 </p>
+              )}
+
+              {!isOnboardingComplete && freeUsesRemaining === 0 && (
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-2">
+                    Você já usou seu teste gratuito!
+                  </p>
+                  <button
+                    onClick={() => setShowOnboardingForm(true)}
+                    className="text-primary-600 hover:text-primary-700 font-medium text-sm underline"
+                  >
+                    Clique aqui para se cadastrar e ter acesso ilimitado
+                  </button>
+                </div>
               )}
             </div>
           </motion.div>
@@ -460,7 +482,10 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                     <p>Preencha os dados do produto e clique em "Gerar Descrição"</p>
                     {!isOnboardingComplete && (
                       <p className="text-sm mt-2">
-                        Você tem {freeUsesRemaining} teste{freeUsesRemaining !== 1 ? 's' : ''} gratuito{freeUsesRemaining !== 1 ? 's' : ''}
+                        {freeUsesRemaining > 0 
+                          ? `Você tem ${freeUsesRemaining} teste${freeUsesRemaining !== 1 ? 's' : ''} gratuito${freeUsesRemaining !== 1 ? 's' : ''}`
+                          : 'Complete seu cadastro para acesso ilimitado'
+                        }
                       </p>
                     )}
                   </div>
