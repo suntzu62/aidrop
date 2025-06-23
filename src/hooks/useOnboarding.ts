@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
+import { onboardingService } from '../services/api';
 import toast from 'react-hot-toast';
 
 interface OnboardingData {
@@ -24,6 +25,17 @@ export const useOnboarding = () => {
     try {
       setLoading(true);
       
+      // Check localStorage first for immediate response
+      const localOnboarding = localStorage.getItem('onboardingComplete');
+      const localUses = localStorage.getItem('freeUsesRemaining');
+      
+      if (localOnboarding === 'true') {
+        setIsOnboardingComplete(true);
+        setFreeUsesRemaining(0); // Unlimited after onboarding
+        setLoading(false);
+        return;
+      }
+      
       if (isAuthenticated && user) {
         // Check user metadata for onboarding status
         const metadata = user.user_metadata || {};
@@ -32,12 +44,14 @@ export const useOnboarding = () => {
         
         setIsOnboardingComplete(onboardingComplete);
         setFreeUsesRemaining(usesRemaining);
-      } else {
-        // Check localStorage for anonymous users
-        const localOnboarding = localStorage.getItem('onboarding_complete');
-        const localUses = localStorage.getItem('free_uses_remaining');
         
-        setIsOnboardingComplete(localOnboarding === 'true');
+        // Sync with localStorage
+        if (onboardingComplete) {
+          localStorage.setItem('onboardingComplete', 'true');
+        }
+      } else {
+        // Use localStorage for anonymous users
+        setIsOnboardingComplete(false);
         setFreeUsesRemaining(localUses ? parseInt(localUses) : 1);
       }
     } catch (error) {
@@ -69,7 +83,7 @@ export const useOnboarding = () => {
         }
       } else {
         // Update localStorage for anonymous users
-        localStorage.setItem('free_uses_remaining', newUsesRemaining.toString());
+        localStorage.setItem('freeUsesRemaining', newUsesRemaining.toString());
       }
 
       return newUsesRemaining;
@@ -83,30 +97,12 @@ export const useOnboarding = () => {
     try {
       setLoading(true);
       
-      // Submit to n8n webhook
-      const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://your-n8n-instance.com/webhook/lead-signup';
-      
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          company: data.company,
-          timestamp: new Date().toISOString(),
-          source: 'description_generator'
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Webhook failed: ${response.status}`);
-      }
+      // Submit to n8n webhook using the service
+      await onboardingService.submitOnboarding(data);
 
       // Mark onboarding as complete
       setIsOnboardingComplete(true);
+      localStorage.setItem('onboardingComplete', 'true');
       
       if (isAuthenticated && user) {
         // Update user metadata
@@ -124,9 +120,8 @@ export const useOnboarding = () => {
           throw error;
         }
       } else {
-        // Update localStorage for anonymous users
-        localStorage.setItem('onboarding_complete', 'true');
-        localStorage.setItem('onboarding_data', JSON.stringify(data));
+        // Store onboarding data in localStorage for anonymous users
+        localStorage.setItem('onboardingData', JSON.stringify(data));
       }
 
       toast.success('Cadastro realizado com sucesso! Agora você tem acesso completo.');
@@ -145,6 +140,11 @@ export const useOnboarding = () => {
       setIsOnboardingComplete(false);
       setFreeUsesRemaining(1);
       
+      // Clear localStorage
+      localStorage.removeItem('onboardingComplete');
+      localStorage.removeItem('onboardingData');
+      localStorage.setItem('freeUsesRemaining', '1');
+      
       if (isAuthenticated && user) {
         const { error } = await supabase.auth.updateUser({
           data: {
@@ -157,10 +157,6 @@ export const useOnboarding = () => {
         if (error) {
           console.error('Error resetting onboarding:', error);
         }
-      } else {
-        localStorage.removeItem('onboarding_complete');
-        localStorage.removeItem('onboarding_data');
-        localStorage.setItem('free_uses_remaining', '1');
       }
     } catch (error) {
       console.error('Error resetting onboarding:', error);

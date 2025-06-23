@@ -41,9 +41,10 @@ const DescriptionGenerator = () => {
   // Check if user should see onboarding form
   useEffect(() => {
     if (!onboardingLoading) {
-      setShowOnboardingForm(!isOnboardingComplete && freeUsesRemaining === 0);
+      // Show onboarding form if not complete
+      setShowOnboardingForm(!isOnboardingComplete);
     }
-  }, [isOnboardingComplete, freeUsesRemaining, onboardingLoading]);
+  }, [isOnboardingComplete, onboardingLoading]);
 
   // Price formatting functions
   const formatPrice = (value: string): string => {
@@ -82,6 +83,7 @@ const DescriptionGenerator = () => {
   };
 
   const handleGenerate = async () => {
+    // Check if onboarding is required
     if (!isOnboardingComplete && freeUsesRemaining === 0) {
       setShowOnboardingForm(true);
       return;
@@ -140,7 +142,7 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
       setGeneratedDescription(mockDescription);
       setIsGenerating(false);
 
-      // Show onboarding form after first free use
+      // Show onboarding form after first free use if not complete
       if (!isOnboardingComplete && freeUsesRemaining === 1) {
         setTimeout(() => {
           setShowOnboardingForm(true);
@@ -153,7 +155,6 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
     const success = await completeOnboarding(data);
     if (success) {
       setShowOnboardingForm(false);
-      // Optionally redirect or show success message
     }
     return success;
   };
@@ -389,15 +390,10 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
 
               <button
                 onClick={handleGenerate}
-                disabled={isGenerating || !productData.title || (!isOnboardingComplete && freeUsesRemaining === 0)}
+                disabled={isGenerating || !productData.title}
                 className="w-full bg-gradient-to-r from-primary-600 to-accent-500 text-white py-4 px-6 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                {!isOnboardingComplete && freeUsesRemaining === 0 ? (
-                  <>
-                    <Lock className="w-5 h-5 mr-2" />
-                    Complete o Cadastro
-                  </>
-                ) : isGenerating ? (
+                {isGenerating ? (
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -407,11 +403,7 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
                 ) : (
                   <Zap className="w-5 h-5 mr-2" />
                 )}
-                {!isOnboardingComplete && freeUsesRemaining === 0 
-                  ? 'Complete o Cadastro' 
-                  : isGenerating 
-                    ? 'Gerando...' 
-                    : 'Gerar Descrição'}
+                {isGenerating ? 'Gerando...' : 'Gerar Descrição'}
               </button>
 
               {!isOnboardingComplete && freeUsesRemaining > 0 && (

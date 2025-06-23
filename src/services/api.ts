@@ -261,7 +261,7 @@ export const notificationService = {
   }
 };
 
-// NEW: Onboarding Service for lead capture
+// Onboarding Service for lead capture
 export const onboardingService = {
   submitOnboarding: async (data: {
     name: string;
