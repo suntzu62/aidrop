@@ -38,13 +38,14 @@ const DescriptionGenerator = () => {
   const [showOnboardingForm, setShowOnboardingForm] = useState(false);
   const [displayPrice, setDisplayPrice] = useState('');
 
-  // Check if user should see onboarding form
+  // Check if user should see onboarding form - only if no free uses and not complete
   useEffect(() => {
     if (!onboardingLoading) {
-      // Show onboarding form if not complete and no free uses remaining
+      // Only show onboarding form if user has no free uses remaining AND hasn't completed onboarding
+      // This prevents showing the form immediately when the component loads
       setShowOnboardingForm(!isOnboardingComplete && freeUsesRemaining === 0);
     }
-  }, [isOnboardingComplete, onboardingLoading, freeUsesRemaining]);
+  }, [isOnboardingComplete, onboardingLoading]); // Removed freeUsesRemaining from dependencies
 
   // Price formatting functions
   const formatPrice = (value: string): string => {
@@ -83,7 +84,7 @@ const DescriptionGenerator = () => {
   };
 
   const handleGenerate = async () => {
-    // Check if onboarding is required
+    // Check if onboarding is required before generating
     if (!isOnboardingComplete && freeUsesRemaining === 0) {
       setShowOnboardingForm(true);
       return;
@@ -143,11 +144,11 @@ ${productData.platform ? `**Plataforma:** ${productData.platform}` : ''}
       setGeneratedDescription(mockDescription);
       setIsGenerating(false);
 
-      // Show onboarding form immediately after consuming the free use
+      // Show onboarding form after generating description if this was the last free use
       if (!isOnboardingComplete && newUsesRemaining === 0) {
         setTimeout(() => {
           setShowOnboardingForm(true);
-        }, 1000); // Small delay to let user see the generated description first
+        }, 3000); // Give user time to see the generated description
       }
     }, 2000);
   };
