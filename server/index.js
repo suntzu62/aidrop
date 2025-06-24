@@ -9,6 +9,7 @@ const webhookProcessor = require('./services/webhookProcessor');
 const productService = require('./services/productService');
 const orderService = require('./services/orderService');
 const alertService = require('./services/alertService');
+const aiService = require('./services/aiService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -68,6 +69,98 @@ app.post('/webhook/n8n', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Webhook processing error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// AI Content Generation endpoint for n8n integration
+app.post('/api/generate-content', async (req, res) => {
+  try {
+    console.log('🤖 AI content generation request:', req.body);
+    
+    const { type, ...data } = req.body;
+    
+    if (!type) {
+      return res.status(400).json({
+        success: false,
+        error: 'Content type is required',
+        availableTypes: [
+          'product-description',
+          'blog-content', 
+          'social-media-post',
+          'email-marketing',
+          'ad-copy',
+          'video-script'
+        ]
+      });
+    }
+    
+    let result;
+    
+    switch (type) {
+      case 'product-description':
+        result = await aiService.generateProductDescription(data);
+        break;
+      case 'blog-content':
+        result = await aiService.generateBlogContent(data);
+        break;
+      case 'social-media-post':
+        result = await aiService.generateSocialMediaPost(data);
+        break;
+      case 'email-marketing':
+        result = await aiService.generateEmailMarketing(data);
+        break;
+      case 'ad-copy':
+        result = await aiService.generateAdCopy(data);
+        break;
+      case 'video-script':
+        result = await aiService.generateVideoScript(data);
+        break;
+      default:
+        return res.status(400).json({
+          success: false,
+          error: `Unknown content type: ${type}`,
+          availableTypes: [
+            'product-description',
+            'blog-content', 
+            'social-media-post',
+            'email-marketing',
+            'ad-copy',
+            'video-script'
+          ]
+        });
+    }
+    
+    // Broadcast to WebSocket clients
+    if (wss) {
+      const broadcastData = {
+        type: 'content_generated',
+        contentType: type,
+        result: result,
+        timestamp: new Date().toISOString()
+      };
+
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(broadcastData));
+        }
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Content generated successfully',
+      type: type,
+      result: result,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ AI content generation error:', error);
     res.status(500).json({
       success: false,
       error: error.message,
@@ -259,6 +352,7 @@ const server = app.listen(PORT, async () => {
   console.log(`🚀 MLBoost server running on port ${PORT}`);
   console.log(`📊 Dashboard: http://localhost:5173`);
   console.log(`🔗 n8n webhook: http://localhost:${PORT}/webhook/n8n`);
+  console.log(`🤖 AI content generation: http://localhost:${PORT}/api/generate-content`);
   console.log(`🏥 Health check: http://localhost:${PORT}/health`);
   
   // Test Supabase connection on startup

@@ -64,6 +64,7 @@ npm start
 ### Webhook
 - `POST /webhook/n8n` - Endpoint principal para n8n
 - `POST /api/test/webhook` - Endpoint de teste
+- `POST /api/generate-content` - Geração de conteúdo com IA para n8n
 
 ## 🔄 Processamento de Webhooks
 
@@ -102,6 +103,18 @@ O sistema processa automaticamente diferentes tipos de dados:
 }
 ```
 
+### Geração de Conteúdo com IA
+```json
+{
+  "type": "product-description",
+  "title": "Smartphone Samsung Galaxy A54",
+  "category": "Eletrônicos",
+  "price": "1299.99",
+  "features": "Tela AMOLED, Câmera 50MP, Bateria 5000mAh",
+  "platform": "Mercado Livre"
+}
+```
+
 ## 🔧 Funcionalidades
 
 ### ✅ Processamento Automático
@@ -125,6 +138,13 @@ O sistema processa automaticamente diferentes tipos de dados:
 - Dados de receita
 - Métricas de performance
 
+### ✅ Geração de Conteúdo com IA
+- Descrições de produtos otimizadas
+- Conteúdo para blog e redes sociais
+- E-mail marketing e anúncios
+- Roteiros para vídeos
+- Integração completa com n8n
+
 ## 🧪 Testando
 
 ### Health Check
@@ -144,6 +164,18 @@ curl -X POST http://localhost:3001/api/test/webhook \
   }'
 ```
 
+### Teste de Geração de Conteúdo
+```bash
+curl -X POST http://localhost:3001/api/generate-content \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "product-description",
+    "title": "Smartphone Premium",
+    "price": "999.99",
+    "features": "Câmera 108MP, Tela OLED, 5G"
+  }'
+```
+
 ## 📊 Monitoramento
 
 O servidor fornece logs detalhados para:
@@ -151,6 +183,8 @@ O servidor fornece logs detalhados para:
 - Processamento de webhooks
 - Operações do banco de dados
 - Erros e exceções
+- Geração de conteúdo com IA
+- Integração com n8n
 
 ## 🔒 Segurança
 
