@@ -6,7 +6,7 @@ import { useAuth } from './hooks/useAuth';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import AdvancedDashboard from './pages/AdvancedDashboard';
-import DescriptionGenerator from './pages/DescriptionGenerator';
+import ContentStudio from './pages/ContentStudio';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/advanced" element={<AdvancedDashboard />} />
-            <Route path="/generator" element={<DescriptionGenerator />} />
+            <Route path="/generator" element={<ContentStudio />} />
           </Routes>
         </motion.main>
         
