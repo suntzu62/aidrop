@@ -35,6 +35,7 @@ const ProductDescriptionGenerator: React.FC<ProductDescriptionGeneratorProps> = 
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [displayPrice, setDisplayPrice] = useState('');
+  const [showGeneratedContent, setShowGeneratedContent] = useState(false);
 
   const platforms = [
     'Mercado Livre',
@@ -78,6 +79,7 @@ const ProductDescriptionGenerator: React.FC<ProductDescriptionGeneratorProps> = 
   };
 
   const handleGenerate = async () => {
+    // Check if user needs onboarding before generating
     if (!isOnboardingComplete && freeUsesRemaining === 0) {
       onShowOnboarding();
       return;
@@ -155,8 +157,10 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
       `.trim();
       
       setGeneratedDescription(mockDescription);
+      setShowGeneratedContent(true); // Show generated content view
       setIsGenerating(false);
 
+      // If user exhausted free uses, show onboarding after a delay
       if (!isOnboardingComplete && newUsesRemaining === 0) {
         setTimeout(() => {
           onShowOnboarding();
@@ -169,6 +173,11 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
     navigator.clipboard.writeText(generatedDescription);
   };
 
+  // Function to go back to form view
+  const handleNewDescription = () => {
+    setShowGeneratedContent(false);
+    setGeneratedDescription('');
+  };
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -183,8 +192,10 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
           </div>
         </div>
 
-        {/* Form */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        {/* Conditional rendering based on showGeneratedContent */}
+        {!showGeneratedContent ? (
+          /* Form View */
+          <div className="grid lg:grid-cols-2 gap-8">
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -303,11 +314,27 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
             </button>
           </div>
 
-          {/* Generated Content */}
+          {/* Preview Area in Form View */}
           <div className="bg-gray-50 rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Descrição Gerada</h3>
-              {generatedDescription && (
+            </div>
+
+            <div className="flex items-center justify-center h-64 text-gray-400">
+              <div className="text-center">
+                <ShoppingBag className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>Preencha os dados do produto e clique em "Gerar Descrição"</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        ) : (
+          /* Generated Content View */
+          <div className="max-w-4xl mx-auto">
+            {/* Generated Description */}
+            <div className="bg-white p-8 rounded-xl border border-gray-200 mb-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">Sua Descrição Otimizada</h3>
                 <div className="flex space-x-2">
                   <button
                     onClick={copyToClipboard}
@@ -323,28 +350,25 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
                     <Download className="w-5 h-5" />
                   </button>
                 </div>
-              )}
+              </div>
+              
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap text-sm text-gray-700 font-mono bg-gray-50 p-6 rounded-lg">
+                  {generatedDescription}
+                </pre>
+              </div>
             </div>
 
-            <div className="min-h-[400px] max-h-[600px] overflow-y-auto">
-              {generatedDescription ? (
-                <div className="bg-white p-6 rounded-lg border">
-                  <pre className="whitespace-pre-wrap text-sm text-gray-700 font-mono">
-                    {generatedDescription}
-                  </pre>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-64 text-gray-400">
-                  <div className="text-center">
-                    <ShoppingBag className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Preencha os dados do produto e clique em "Gerar Descrição"</p>
-                  </div>
-                </div>
-              )}
+            {/* Success Message */}
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-6">
+              <div className="flex items-center text-green-700">
+                <Check className="w-5 h-5 mr-2" />
+                <span className="font-medium">Descrição otimizada criada com sucesso!</span>
+              </div>
+              <p className="text-sm text-green-600 mt-1">
+                Esta descrição foi otimizada para SEO e conversão em plataformas de e-commerce.
+              </p>
             </div>
-
-            {generatedDescription && (
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center text-green-700">
                   <Check className="w-5 h-5 mr-2" />
                   <span className="font-medium">Descrição otimizada criada com sucesso!</span>
@@ -361,4 +385,28 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
   );
 };
 
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {/* New Description Button */}
+              <button
+                onClick={handleNewDescription}
+                className="px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-all flex items-center justify-center"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Gerar Nova Descrição
+              </button>
+              
+              {/* Sign Up Button - Only show if user needs onboarding */}
+              {!isOnboardingComplete && (
+                <button
+                  onClick={onShowOnboarding}
+                  className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all flex items-center justify-center"
+                >
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Inscreva-se para Acesso Completo
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 export default ProductDescriptionGenerator;
