@@ -178,6 +178,7 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
     setShowGeneratedContent(false);
     setGeneratedDescription('');
   };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -196,138 +197,138 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
         {!showGeneratedContent ? (
           /* Form View */
           <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nome do Produto *
-              </label>
-              <input
-                type="text"
-                value={productData.title}
-                onChange={(e) => setProductData({...productData, title: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ex: Smartphone Samsung Galaxy A54"
-              />
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Categoria
+                  Nome do Produto *
                 </label>
-                <select
-                  value={productData.category}
-                  onChange={(e) => setProductData({...productData, category: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Selecione uma categoria</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Plataforma
-                </label>
-                <select
-                  value={productData.platform}
-                  onChange={(e) => setProductData({...productData, platform: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Selecione uma plataforma</option>
-                  {platforms.map((platform) => (
-                    <option key={platform} value={platform}>{platform}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Preço (R$)
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
-                  R$
-                </span>
                 <input
                   type="text"
-                  value={displayPrice}
-                  onChange={handlePriceChange}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="0,00"
+                  value={productData.title}
+                  onChange={(e) => setProductData({...productData, title: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: Smartphone Samsung Galaxy A54"
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Principais Características
-              </label>
-              <textarea
-                value={productData.features}
-                onChange={(e) => setProductData({...productData, features: e.target.value})}
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ex: Tela AMOLED 6.4', Câmera 50MP, Bateria 5000mAh"
-              />
-            </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Categoria
+                  </label>
+                  <select
+                    value={productData.category}
+                    onChange={(e) => setProductData({...productData, category: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Selecione uma categoria</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Palavras-chave SEO
-              </label>
-              <input
-                type="text"
-                value={productData.keywords}
-                onChange={(e) => setProductData({...productData, keywords: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="smartphone, samsung, galaxy, oferta"
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Plataforma
+                  </label>
+                  <select
+                    value={productData.platform}
+                    onChange={(e) => setProductData({...productData, platform: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Selecione uma plataforma</option>
+                    {platforms.map((platform) => (
+                      <option key={platform} value={platform}>{platform}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-            <button
-              onClick={handleGenerate}
-              disabled={isGenerating || !productData.title || (!isOnboardingComplete && freeUsesRemaining === 0)}
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {isGenerating ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                >
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Preço (R$)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+                    R$
+                  </span>
+                  <input
+                    type="text"
+                    value={displayPrice}
+                    onChange={handlePriceChange}
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="0,00"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Principais Características
+                </label>
+                <textarea
+                  value={productData.features}
+                  onChange={(e) => setProductData({...productData, features: e.target.value})}
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: Tela AMOLED 6.4', Câmera 50MP, Bateria 5000mAh"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Palavras-chave SEO
+                </label>
+                <input
+                  type="text"
+                  value={productData.keywords}
+                  onChange={(e) => setProductData({...productData, keywords: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="smartphone, samsung, galaxy, oferta"
+                />
+              </div>
+
+              <button
+                onClick={handleGenerate}
+                disabled={isGenerating || !productData.title || (!isOnboardingComplete && freeUsesRemaining === 0)}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {isGenerating ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Zap className="w-5 h-5 mr-2" />
+                  </motion.div>
+                ) : !isOnboardingComplete && freeUsesRemaining === 0 ? (
+                  <>
+                    <Lock className="w-5 h-5 mr-2" />
+                    Complete o Cadastro
+                  </>
+                ) : (
                   <Zap className="w-5 h-5 mr-2" />
-                </motion.div>
-              ) : !isOnboardingComplete && freeUsesRemaining === 0 ? (
-                <>
-                  <Lock className="w-5 h-5 mr-2" />
-                  Complete o Cadastro
-                </>
-              ) : (
-                <Zap className="w-5 h-5 mr-2" />
-              )}
-              {isGenerating ? 'Gerando Descrição...' : 
-               !isOnboardingComplete && freeUsesRemaining === 0 ? 'Complete o Cadastro' :
-               'Gerar Descrição'}
-            </button>
-          </div>
-
-          {/* Preview Area in Form View */}
-          <div className="bg-gray-50 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Descrição Gerada</h3>
+                )}
+                {isGenerating ? 'Gerando Descrição...' : 
+                 !isOnboardingComplete && freeUsesRemaining === 0 ? 'Complete o Cadastro' :
+                 'Gerar Descrição'}
+              </button>
             </div>
 
-            <div className="flex items-center justify-center h-64 text-gray-400">
-              <div className="text-center">
-                <ShoppingBag className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Preencha os dados do produto e clique em "Gerar Descrição"</p>
+            {/* Preview Area in Form View */}
+            <div className="bg-gray-50 rounded-xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Descrição Gerada</h3>
+              </div>
+
+              <div className="flex items-center justify-center h-64 text-gray-400">
+                <div className="text-center">
+                  <ShoppingBag className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>Preencha os dados do produto e clique em "Gerar Descrição"</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         ) : (
           /* Generated Content View */
           <div className="max-w-4xl mx-auto">
@@ -369,21 +370,6 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
                 Esta descrição foi otimizada para SEO e conversão em plataformas de e-commerce.
               </p>
             </div>
-                <div className="flex items-center text-green-700">
-                  <Check className="w-5 h-5 mr-2" />
-                  <span className="font-medium">Descrição otimizada criada com sucesso!</span>
-                </div>
-                <p className="text-sm text-green-600 mt-1">
-                  Esta descrição foi otimizada para SEO e conversão em plataformas de e-commerce.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -409,4 +395,9 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+
 export default ProductDescriptionGenerator;
