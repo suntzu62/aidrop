@@ -59,6 +59,13 @@ class WebhookProcessor {
   // Process product data
   async processProductData(data, results) {
     try {
+      // Ensure product has an ID - generate one if missing
+      if (!data.id && !data.product_id) {
+        data.id = `prod_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      } else if (data.product_id && !data.id) {
+        data.id = data.product_id;
+      }
+
       const product = await productService.upsertProduct(data);
       results.processed.push({
         type: 'product',
