@@ -2,20 +2,20 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 // Validate environment variables
-if (!process.env.SUPABASE_URL) {
+if (!process.env.VITE_SUPABASE_URL) {
   console.error('❌ SUPABASE_URL environment variable is required');
   process.exit(1);
 }
 
-if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+if (!process.env.VITE_SUPABASE_ANON_KEY) {
   console.error('❌ SUPABASE_SERVICE_ROLE_KEY environment variable is required');
   process.exit(1);
 }
 
 // Create Supabase client with service role key for backend operations
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  process.env.VITE_SUPABASE_URL,
+  process.env.VITE_SUPABASE_ANON_KEY,
   {
     auth: {
       autoRefreshToken: false,
