@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config({ path: './.env' });
+require('dotenv').config();
 
 // Validate environment variables
 if (!process.env.VITE_SUPABASE_URL) {
