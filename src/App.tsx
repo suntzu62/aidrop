@@ -7,6 +7,8 @@ import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import AdvancedDashboard from './pages/AdvancedDashboard';
 import ContentStudio from './pages/ContentStudio';
+import ProductListingPage from './pages/ProductListingPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/products" element={<ProductListingPage />} />
+            <Route path="/products/:id" element={<ProductDetailPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/advanced" element={<AdvancedDashboard />} />
             <Route path="/generator" element={<ContentStudio />} />
