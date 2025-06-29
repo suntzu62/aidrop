@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Package, 
@@ -12,7 +12,8 @@ import {
   Eye,
   TrendingUp,
   AlertTriangle,
-  RefreshCw
+  RefreshCw,
+  Plus
 } from 'lucide-react';
 import { inventoryService } from '../services/api';
 
@@ -33,6 +34,7 @@ interface Product {
 }
 
 const ProductListingPage = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -164,6 +166,13 @@ const ProductListingPage = () => {
             </div>
             
             <div className="flex items-center space-x-4">
+              <Link
+                to="/products/register"
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Novo Produto</span>
+              </Link>
               <button
                 onClick={loadProducts}
                 disabled={loading}

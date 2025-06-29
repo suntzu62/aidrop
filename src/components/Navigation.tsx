@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package } from 'lucide-react';
+import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package, Plus } from 'lucide-react';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +10,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/', label: 'Início', icon: ShoppingCart },
     { path: '/products', label: 'Produtos', icon: Package },
+    { path: '/products/register', label: 'Cadastrar Produto', icon: Plus },
     { path: '/generator', label: 'Estúdio de Conteúdo', icon: Sparkles },
     { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
     { path: '/advanced', label: 'Avançado', icon: Zap },
