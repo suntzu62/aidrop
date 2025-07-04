@@ -58,7 +58,7 @@ const ContentStudio = () => {
       description: 'Crie descrições otimizadas para e-commerce que convertem',
       icon: ShoppingBag,
       color: 'from-blue-500 to-blue-600',
-      category: 'E-commerce'
+      category: 'Marketing'
     },
     {
       id: 'blog-content',
@@ -66,7 +66,7 @@ const ContentStudio = () => {
       description: 'Gere introduções, tópicos e artigos completos para blog',
       icon: PenTool,
       color: 'from-purple-500 to-purple-600',
-      category: 'Conteúdo'
+      category: 'Marketing'
     },
     {
       id: 'social-media',
@@ -74,7 +74,7 @@ const ContentStudio = () => {
       description: 'Crie posts envolventes para Instagram, Facebook, LinkedIn',
       icon: MessageSquare,
       color: 'from-pink-500 to-pink-600',
-      category: 'Social Media'
+      category: 'Redes Sociais'
     },
     {
       id: 'email-marketing',
@@ -82,7 +82,7 @@ const ContentStudio = () => {
       description: 'Desenvolva campanhas de e-mail que geram resultados',
       icon: Mail,
       color: 'from-green-500 to-green-600',
-      category: 'Marketing'
+      category: 'Vendas'
     },
     {
       id: 'ad-copy',
@@ -90,7 +90,7 @@ const ContentStudio = () => {
       description: 'Crie copy para Google Ads, Facebook Ads e outras plataformas',
       icon: Megaphone,
       color: 'from-orange-500 to-orange-600',
-      category: 'Publicidade'
+      category: 'Marketing'
     },
     {
       id: 'video-script',
@@ -98,7 +98,7 @@ const ContentStudio = () => {
       description: 'Desenvolva scripts para YouTube, TikTok e apresentações',
       icon: Video,
       color: 'from-red-500 to-red-600',
-      category: 'Vídeo'
+      category: 'Redes Sociais'
     }
   ];
 
@@ -192,7 +192,7 @@ const ContentStudio = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 max-w-md mx-auto"
+              className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 max-w-lg mx-auto"
             >
               <div className="flex items-center justify-center mb-2">
                 <Gift className="w-6 h-6 text-green-600 mr-3" />
@@ -208,6 +208,15 @@ const ContentStudio = () => {
                   : 'Complete seu cadastro para acesso ilimitado a todas as ferramentas'
                 }
               </p>
+              <div className="mt-4 pt-4 border-t border-green-200">
+                <Link
+                  to="/brand-voice"
+                  className="text-sm text-green-700 hover:text-green-800 font-medium flex items-center"
+                >
+                  <Sparkles className="w-4 h-4 mr-1" />
+                  Configure sua Voz da Marca para resultados ainda melhores
+                </Link>
+              </div>
             </motion.div>
           )}
         </motion.div>
@@ -224,6 +233,22 @@ const ContentStudio = () => {
                 <Target className="w-5 h-5 text-primary-600 mr-2" />
                 Ferramentas de IA
               </h2>
+              
+              {/* Brand Voice Quick Access */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-medium text-purple-900">Voz da Marca</h3>
+                  <Link
+                    to="/brand-voice"
+                    className="text-xs text-purple-600 hover:text-purple-700 font-medium"
+                  >
+                    Configurar
+                  </Link>
+                </div>
+                <p className="text-xs text-purple-700">
+                  Configure a personalidade da sua marca para gerar conteúdo mais consistente
+                </p>
+              </div>
 
               <div className="space-y-6">
                 {categories.map((category) => (

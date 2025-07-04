@@ -11,6 +11,7 @@ import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import ProductRegistrationPage from './pages/ProductRegistrationPage';
 import PressReleasePage from './pages/PressReleasePage';
+import BrandVoiceSettingsPage from './pages/BrandVoiceSettingsPage';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
             <Route path="/advanced" element={<AdvancedDashboard />} />
             <Route path="/generator" element={<ContentStudio />} />
             <Route path="/press-release" element={<PressReleasePage />} />
+            <Route path="/brand-voice" element={<BrandVoiceSettingsPage />} />
           </Routes>
         </motion.main>
         
