@@ -10,6 +10,7 @@ import ContentStudio from './pages/ContentStudio';
 import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import ProductRegistrationPage from './pages/ProductRegistrationPage';
+import PressReleasePage from './pages/PressReleasePage';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/advanced" element={<AdvancedDashboard />} />
             <Route path="/generator" element={<ContentStudio />} />
+            <Route path="/press-release" element={<PressReleasePage />} />
           </Routes>
         </motion.main>
         
