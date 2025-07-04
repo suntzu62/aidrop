@@ -261,6 +261,63 @@ export const notificationService = {
   }
 };
 
+// AI Service for content generation
+export const aiService = {
+  generateBlogTitles: async (data: {
+    theme: string;
+    audience?: string;
+    industry?: string;
+    keywords?: string;
+  }) => {
+    const response = await api.post('/generate-content', {
+      type: 'blog-titles',
+      ...data
+    });
+    return response.data;
+  },
+
+  generateBlogOutline: async (data: {
+    title: string;
+    theme: string;
+    audience?: string;
+    keywords?: string;
+  }) => {
+    const response = await api.post('/generate-content', {
+      type: 'blog-outline',
+      ...data
+    });
+    return response.data;
+  },
+
+  generateFullBlogArticle: async (data: {
+    title: string;
+    outline?: any;
+    theme: string;
+    audience?: string;
+    tone?: string;
+  }) => {
+    const response = await api.post('/generate-content', {
+      type: 'full-blog-article',
+      ...data
+    });
+    return response.data;
+  },
+
+  generateSocialMediaPostsForArticle: async (data: {
+    title: string;
+    theme: string;
+    audience?: string;
+    articleUrl?: string;
+    keyPoints?: string[];
+  }) => {
+    const response = await api.post('/generate-content', {
+      type: 'social-media-for-article',
+      ...data
+    });
+    return response.data;
+  }
+};
+
 // Onboarding Service for lead capture
 export const onboardingService = {
   submitOnboarding: async (data: {

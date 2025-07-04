@@ -31,6 +31,7 @@ import SocialMediaPostGenerator from '../components/workflows/SocialMediaPostGen
 import EmailMarketingGenerator from '../components/workflows/EmailMarketingGenerator';
 import AdCopyGenerator from '../components/workflows/AdCopyGenerator';
 import VideoScriptGenerator from '../components/workflows/VideoScriptGenerator';
+import BlogCampaignGenerator from '../components/workflows/BlogCampaignGenerator';
 
 const ContentStudio = () => {
   const {
@@ -52,6 +53,14 @@ const ContentStudio = () => {
   }, [isOnboardingComplete, onboardingLoading]);
 
   const workflows = [
+    {
+      id: 'blog-campaign',
+      title: 'Campanha Completa para Blog',
+      description: 'Do tema aos posts sociais - workflow completo automatizado',
+      icon: PenTool,
+      color: 'from-purple-500 to-blue-600',
+      category: 'Workflows'
+    },
     {
       id: 'product-description',
       title: 'Descrições de Produto',
@@ -133,6 +142,8 @@ const ContentStudio = () => {
         return <AdCopyGenerator {...commonProps} />;
       case 'video-script':
         return <VideoScriptGenerator {...commonProps} />;
+      case 'blog-campaign':
+        return <BlogCampaignGenerator {...commonProps} />;
       default:
         return <ProductDescriptionGenerator {...commonProps} />;
     }

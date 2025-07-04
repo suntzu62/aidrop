@@ -120,6 +120,18 @@ app.post('/api/generate-content', async (req, res) => {
       case 'video-script':
         result = await aiService.generateVideoScript(data);
         break;
+      case 'blog-titles':
+        result = await aiService.generateBlogTitles(data);
+        break;
+      case 'blog-outline':
+        result = await aiService.generateBlogOutline(data);
+        break;
+      case 'full-blog-article':
+        result = await aiService.generateFullBlogArticle(data);
+        break;
+      case 'social-media-for-article':
+        result = await aiService.generateSocialMediaPostsForArticle(data);
+        break;
       default:
         return res.status(400).json({
           success: false,
