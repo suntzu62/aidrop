@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
@@ -13,10 +13,21 @@ import {
   BarChart3,
   Rocket,
   Star,
-  Quote
+  Quote,
+  Store,
+  Package,
+  Truck,
+  CreditCard,
+  ShoppingCart,
+  Mail,
+  ArrowRight,
+  CheckCircle,
+  Play
 } from 'lucide-react';
 
 const PressReleasePage = () => {
+  const [email, setEmail] = useState('');
+
   const stats = [
     { label: 'Crescimento de Receita', value: '480%', icon: TrendingUp },
     { label: 'Clientes Ativos', value: '50K+', icon: Users },
@@ -42,10 +53,24 @@ const PressReleasePage = () => {
     }
   ];
 
+  const trustIndicators = [
+    { icon: Store, label: 'E-commerce' },
+    { icon: Package, label: 'Logística' },
+    { icon: Truck, label: 'Entrega' },
+    { icon: CreditCard, label: 'Pagamentos' },
+    { icon: Users, label: 'Clientes' }
+  ];
+
+  const handleDemoRequest = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle demo request
+    console.log('Demo requested for:', email);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -69,49 +94,172 @@ const PressReleasePage = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Abstract Shapes */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-primary-900 to-accent-900 text-white">
-        {/* Abstract Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-primary-500/20 rounded-full blur-xl"></div>
-          <div className="absolute top-40 right-20 w-24 h-24 bg-accent-500/30 rounded-lg rotate-45 blur-lg"></div>
-          <div className="absolute bottom-20 left-1/4 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl"></div>
-          <div className="absolute top-1/2 right-10 w-16 h-16 bg-green-500/25 rounded-lg rotate-12 blur-md"></div>
-          <div className="absolute bottom-40 right-1/3 w-28 h-28 bg-blue-500/20 rounded-full blur-xl"></div>
-          
-          {/* Geometric Lines */}
-          <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 1000 600">
-            <path d="M0,300 Q250,100 500,300 T1000,300" stroke="currentColor" strokeWidth="2" fill="none" />
-            <path d="M0,200 Q300,400 600,200 T1200,200" stroke="currentColor" strokeWidth="1" fill="none" />
-          </svg>
-        </div>
+      {/* Hero Section - Redesigned */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 to-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            
+            {/* Left Column - Transition Messages */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-400 line-through">
+                    Diga Adeus à Complexidade
+                  </h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-400 line-through">
+                    Diga Adeus às Ferramentas Fragmentadas
+                  </h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-400 line-through">
+                    Diga Adeus às Vendas Baixas
+                  </h2>
+                </div>
+                
+                <div className="flex items-center space-x-2 text-accent-600">
+                  <Calendar className="w-5 h-5" />
+                  <span className="font-medium">22 de Dezembro, 2024</span>
+                </div>
+              </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+              <div className="bg-gradient-to-r from-primary-50 to-accent-50 p-6 rounded-2xl border border-primary-100">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  📈 Comunicado de Imprensa
+                </h3>
+                <p className="text-gray-700">
+                  MLBoost anuncia crescimento explosivo de <strong>480% em receita</strong>, 
+                  consolidando-se como líder em IA para e-commerce no Brasil.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Right Column - Welcome Message & Visual Flow */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="text-center lg:text-left mb-8">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+                  Bem-vindo à
+                  <span className="block bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
+                    MLBoost
+                  </span>
+                </h1>
+                <p className="text-xl md:text-2xl text-gray-600 mb-8">
+                  A Plataforma de IA que <br />
+                  <span className="font-semibold text-primary-600">Multiplica Suas Vendas</span>
+                </p>
+              </div>
+
+              {/* Visual Flow */}
+              <div className="relative bg-gradient-to-br from-primary-50 to-accent-50 p-8 rounded-3xl border border-primary-100">
+                {/* Flow Steps */}
+                <div className="space-y-6">
+                  {[
+                    { step: 1, title: 'Gere Conteúdo Otimizado', icon: Zap, color: 'from-blue-500 to-blue-600' },
+                    { step: 2, title: 'Analise Performance', icon: BarChart3, color: 'from-purple-500 to-purple-600' },
+                    { step: 3, title: 'Otimize Campanhas', icon: Target, color: 'from-green-500 to-green-600' },
+                    { step: 4, title: 'Multiplique Vendas', icon: TrendingUp, color: 'from-orange-500 to-orange-600' }
+                  ].map((item, index) => {
+                    const Icon = item.icon;
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 + index * 0.1 }}
+                        className="flex items-center space-x-4"
+                      >
+                        <div className={`w-12 h-12 bg-gradient-to-r ${item.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm font-medium text-gray-500">Passo {item.step}</span>
+                            {index < 3 && <ArrowRight className="w-4 h-4 text-gray-400" />}
+                          </div>
+                          <h4 className="font-semibold text-gray-900">{item.title}</h4>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* CTA Form */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="mt-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-200"
+                >
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+                    Veja os Resultados em Ação
+                  </h3>
+                  <form onSubmit={handleDemoRequest} className="space-y-4">
+                    <div>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Qual seu melhor e-mail?"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-primary-600 to-accent-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-600 transition-all flex items-center justify-center"
+                    >
+                      <Play className="w-5 h-5 mr-2" />
+                      Solicitar Demo Gratuita
+                    </button>
+                  </form>
+                  <p className="text-xs text-gray-500 text-center mt-3">
+                    ✨ Sem compromisso • Resultados em 24h • Suporte em português
+                  </p>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trusted By Section */}
+      <section className="py-12 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ delay: 0.3 }}
             className="text-center"
           >
-            <div className="flex items-center justify-center mb-6">
-              <Calendar className="w-5 h-5 mr-2 text-accent-400" />
-              <span className="text-accent-400 font-medium">22 de Dezembro, 2024</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8">
-              <span className="block">MLBoost Revoluciona</span>
-              <span className="block bg-gradient-to-r from-accent-400 to-primary-400 bg-clip-text text-transparent">
-                E-commerce com IA
-              </span>
-              <span className="block text-3xl md:text-4xl lg:text-5xl mt-4 text-gray-300">
-                480% de Crescimento em 2024
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Plataforma brasileira de IA para e-commerce supera todas as expectativas, 
-              transformando como vendedores criam conteúdo e aumentam suas vendas online
+            <p className="text-gray-600 font-medium mb-8">
+              Confiado por milhares de vendedores e empresas líderes em
             </p>
+            <div className="flex items-center justify-center space-x-12 opacity-60">
+              {trustIndicators.map((indicator, index) => {
+                const Icon = indicator.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 + index * 0.1 }}
+                    className="flex flex-col items-center space-y-2"
+                  >
+                    <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <Icon className="w-6 h-6 text-gray-500" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-500">{indicator.label}</span>
+                  </motion.div>
+                );
+              })}
+            </div>
           </motion.div>
         </div>
       </section>
@@ -123,12 +271,27 @@ const PressReleasePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="text-center mb-12"
           >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Números que Impressionam
+            </h2>
+            <p className="text-xl text-gray-600">
+              O crescimento que está transformando o e-commerce brasileiro
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
-                <div key={index} className="text-center">
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                  className="text-center p-6 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-lg transition-all"
+                >
                   <div className="w-16 h-16 bg-gradient-to-r from-primary-100 to-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Icon className="w-8 h-8 text-primary-600" />
                   </div>
@@ -138,10 +301,10 @@ const PressReleasePage = () => {
                   <div className="text-gray-600 font-medium">
                     {stat.label}
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -198,10 +361,22 @@ const PressReleasePage = () => {
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-8">
                 <h4 className="text-lg font-semibold text-blue-900 mb-3">Resultados Comprovados:</h4>
                 <ul className="space-y-2 text-blue-800">
-                  <li>• <strong>300% de aumento médio</strong> nas vendas dos clientes</li>
-                  <li>• <strong>85% de redução</strong> no tempo de criação de conteúdo</li>
-                  <li>• <strong>92% de satisfação</strong> dos usuários da plataforma</li>
-                  <li>• <strong>15+ plataformas</strong> de e-commerce integradas</li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                    <strong>300% de aumento médio</strong> nas vendas dos clientes
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                    <strong>85% de redução</strong> no tempo de criação de conteúdo
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                    <strong>92% de satisfação</strong> dos usuários da plataforma
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                    <strong>15+ plataformas</strong> de e-commerce integradas
+                  </li>
                 </ul>
               </div>
 
