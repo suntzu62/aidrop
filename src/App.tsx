@@ -6,6 +6,7 @@ import { useAuth } from './hooks/useAuth';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import AdvancedDashboard from './pages/AdvancedDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import ContentStudio from './pages/ContentStudio';
 import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -48,6 +49,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/advanced" element={<AdvancedDashboard />} />
             <Route path="/generator" element={<ContentStudio />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/press-release" element={<PressReleasePage />} />
             <Route path="/brand-voice" element={<BrandVoiceSettingsPage />} />
             <Route path="/content-library" element={<ContentLibraryPage />} />
