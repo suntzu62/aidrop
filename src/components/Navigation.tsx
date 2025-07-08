@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package, Plus, Mic } from 'lucide-react';
+import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package, Plus, Mic, BookOpen } from 'lucide-react';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +15,7 @@ const Navigation = () => {
     { path: '/brand-voice', label: 'Voz da Marca', icon: Mic },
     { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
     { path: '/advanced', label: 'Avançado', icon: Zap },
+    { path: '/content-library', label: 'Biblioteca', icon: BookOpen },
   ];
 
   return (

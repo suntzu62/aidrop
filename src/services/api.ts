@@ -318,6 +318,54 @@ export const aiService = {
   }
 };
 
+// Content Management Service
+export const contentService = {
+  saveContent: async (contentData: {
+    user_id: string;
+    content_type: string;
+    title: string;
+    content: string;
+    metadata?: any;
+  }) => {
+    const response = await api.post('/content', contentData);
+    return response.data;
+  },
+
+  getSavedContents: async (userId: string, contentType?: string) => {
+    const response = await api.get('/content', {
+      params: { user_id: userId, content_type: contentType }
+    });
+    return response.data;
+  },
+
+  getContentById: async (contentId: string, userId: string) => {
+    const response = await api.get(`/content/${contentId}`, {
+      params: { user_id: userId }
+    });
+    return response.data;
+  },
+
+  updateContent: async (contentId: string, userId: string, updates: any) => {
+    const response = await api.put(`/content/${contentId}`, {
+      user_id: userId,
+      ...updates
+    });
+    return response.data;
+  },
+
+  deleteContent: async (contentId: string, userId: string) => {
+    const response = await api.delete(`/content/${contentId}`, {
+      params: { user_id: userId }
+    });
+    return response.data;
+  },
+
+  getContentStats: async (userId: string) => {
+    const response = await api.get(`/content/stats/${userId}`);
+    return response.data;
+  }
+};
+
 // Onboarding Service for lead capture
 export const onboardingService = {
   submitOnboarding: async (data: {

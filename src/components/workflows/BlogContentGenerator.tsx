@@ -9,8 +9,13 @@ import {
   Check,
   BookOpen,
   Target,
-  Users
+  Users,
+  Save
 } from 'lucide-react';
+import { contentService } from '../../services/api';
+import { useAuth } from '../../hooks/useAuth';
+import { useStore } from '../../store/useStore';
+import toast from 'react-hot-toast';
 
 interface BlogContentGeneratorProps {
   freeUsesRemaining: number;
@@ -36,6 +41,10 @@ const BlogContentGenerator: React.FC<BlogContentGeneratorProps> = ({
 
   const [generatedContent, setGeneratedContent] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [saving, setSaving] = useState(false);
+  
+  const { user, isAuthenticated } = useAuth();
+  const { addSavedContent } = useStore();
 
   const audiences = [
     'Empreendedores',
@@ -531,6 +540,44 @@ ${blogData.keywords ? `**Tags:** ${blogData.keywords}` : ''}
     navigator.clipboard.writeText(generatedContent);
   };
 
+  const handleSaveContent = async () => {
+    if (!isAuthenticated || !user) {
+      toast.error('Você precisa estar logado para salvar conteúdo');
+      return;
+    }
+
+    if (!generatedContent) {
+      toast.error('Nenhum conteúdo para salvar');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const contentData = {
+        user_id: user.id,
+        content_type: 'blog_content',
+        title: blogData.topic || 'Conteúdo de Blog',
+        content: generatedContent,
+        metadata: {
+          audience: blogData.audience,
+          tone: blogData.tone,
+          contentType: blogData.contentType,
+          wordCount: blogData.wordCount,
+          keywords: blogData.keywords
+        }
+      };
+
+      const savedContent = await contentService.saveContent(contentData);
+      addSavedContent(savedContent);
+      toast.success('Conteúdo salvo com sucesso!');
+    } catch (error) {
+      console.error('Error saving content:', error);
+      toast.error('Erro ao salvar conteúdo');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -683,6 +730,14 @@ ${blogData.keywords ? `**Tags:** ${blogData.keywords}` : ''}
                     title="Copiar"
                   >
                     <Copy className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={handleSaveContent}
+                    disabled={saving || !isAuthenticated}
+                    className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all disabled:opacity-50"
+                    title={isAuthenticated ? "Salvar" : "Faça login para salvar"}
+                  >
+                    <Save className="w-5 h-5" />
                   </button>
                   <button
                     className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"

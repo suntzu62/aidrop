@@ -10,6 +10,7 @@ const productService = require('./services/productService');
 const orderService = require('./services/orderService');
 const alertService = require('./services/alertService');
 const aiService = require('./services/aiService');
+const contentService = require('./services/contentService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -343,6 +344,101 @@ app.put('/api/alerts/:id/read', async (req, res) => {
     res.json(alert);
   } catch (error) {
     console.error('Error marking alert as read:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Content Management endpoints
+app.post('/api/content', async (req, res) => {
+  try {
+    const content = await contentService.saveContent(req.body);
+    res.json(content);
+  } catch (error) {
+    console.error('Error saving content:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/content', async (req, res) => {
+  try {
+    const { user_id, content_type, limit } = req.query;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: 'user_id is required' });
+    }
+
+    let content;
+    if (content_type) {
+      content = await contentService.getContentByType(user_id, content_type);
+    } else {
+      content = await contentService.getUserContent(user_id, limit ? parseInt(limit) : 50);
+    }
+    
+    res.json(content);
+  } catch (error) {
+    console.error('Error fetching content:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/content/:id', async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: 'user_id is required' });
+    }
+
+    const content = await contentService.getContentById(req.params.id, user_id);
+    if (!content) {
+      return res.status(404).json({ error: 'Content not found' });
+    }
+    
+    res.json(content);
+  } catch (error) {
+    console.error('Error fetching content:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/content/:id', async (req, res) => {
+  try {
+    const { user_id, ...updates } = req.body;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: 'user_id is required' });
+    }
+
+    const content = await contentService.updateContent(req.params.id, user_id, updates);
+    res.json(content);
+  } catch (error) {
+    console.error('Error updating content:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/content/:id', async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: 'user_id is required' });
+    }
+
+    const result = await contentService.deleteContent(req.params.id, user_id);
+    res.json(result);
+  } catch (error) {
+    console.error('Error deleting content:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/content/stats/:user_id', async (req, res) => {
+  try {
+    const stats = await contentService.getContentStats(req.params.user_id);
+    res.json(stats);
+  } catch (error) {
+    console.error('Error fetching content stats:', error);
     res.status(500).json({ error: error.message });
   }
 });

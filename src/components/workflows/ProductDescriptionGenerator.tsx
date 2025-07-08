@@ -7,11 +7,16 @@ import {
   Download, 
   Lock,
   Sparkles,
-  Check
+  Check,
+  Save
 } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { marked } from 'marked';
+import { contentService } from '../../services/api';
+import { useAuth } from '../../hooks/useAuth';
+import { useStore } from '../../store/useStore';
+import toast from 'react-hot-toast';
 
 interface ProductDescriptionGeneratorProps {
   freeUsesRemaining: number;
@@ -40,6 +45,10 @@ const ProductDescriptionGenerator: React.FC<ProductDescriptionGeneratorProps> = 
   const [displayPrice, setDisplayPrice] = useState('');
   const [showGeneratedContent, setShowGeneratedContent] = useState(false);
   const [quillValue, setQuillValue] = useState('');
+  const [saving, setSaving] = useState(false);
+  
+  const { user, isAuthenticated } = useAuth();
+  const { addSavedContent } = useStore();
 
   const platforms = [
     'Mercado Livre',
@@ -203,6 +212,44 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
     // Get content from either the Quill editor (HTML) or the original generated description
     const contentToCopy = showGeneratedContent ? quillValue : generatedDescription;
     navigator.clipboard.writeText(contentToCopy);
+  };
+
+  const handleSaveContent = async () => {
+    if (!isAuthenticated || !user) {
+      toast.error('Você precisa estar logado para salvar conteúdo');
+      return;
+    }
+
+    if (!generatedDescription) {
+      toast.error('Nenhum conteúdo para salvar');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const contentData = {
+        user_id: user.id,
+        content_type: 'product_description',
+        title: productData.title || 'Descrição de Produto',
+        content: quillValue || generatedDescription,
+        metadata: {
+          platform: productData.platform,
+          category: productData.category,
+          price: productData.price,
+          keywords: productData.keywords,
+          features: productData.features
+        }
+      };
+
+      const savedContent = await contentService.saveContent(contentData);
+      addSavedContent(savedContent);
+      toast.success('Conteúdo salvo com sucesso!');
+    } catch (error) {
+      console.error('Error saving content:', error);
+      toast.error('Erro ao salvar conteúdo');
+    } finally {
+      setSaving(false);
+    }
   };
 
   // Function to go back to form view
@@ -375,6 +422,14 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
                     title="Copiar"
                   >
                     <Copy className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={handleSaveContent}
+                    disabled={saving || !isAuthenticated}
+                    className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all disabled:opacity-50"
+                    title={isAuthenticated ? "Salvar" : "Faça login para salvar"}
+                  >
+                    <Save className="w-5 h-5" />
                   </button>
                   <button
                     className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"

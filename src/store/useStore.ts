@@ -1,6 +1,17 @@
 import { create } from 'zustand';
 import { User, Session } from '@supabase/supabase-js';
 
+interface SavedContent {
+  id: string;
+  user_id: string;
+  content_type: string;
+  title: string;
+  content: string;
+  metadata: any;
+  created_at: string;
+  updated_at: string;
+}
+
 interface Product {
   id: string;
   title: string;
@@ -51,6 +62,7 @@ interface StoreState {
   orders: Order[];
   kpis: KPI;
   alerts: Alert[];
+  savedContents: SavedContent[];
   
   // UI State
   isConnected: boolean;
@@ -71,6 +83,12 @@ interface StoreState {
   markAlertAsRead: (id: string) => void;
   setConnectionStatus: (status: boolean) => void;
   setLoading: (loading: boolean) => void;
+  
+  // Content Management Actions
+  setSavedContents: (contents: SavedContent[]) => void;
+  addSavedContent: (content: SavedContent) => void;
+  updateSavedContent: (id: string, updates: Partial<SavedContent>) => void;
+  removeSavedContent: (id: string) => void;
 }
 
 export const useStore = create<StoreState>((set, get) => ({
@@ -94,6 +112,7 @@ export const useStore = create<StoreState>((set, get) => ({
   alerts: [],
   isConnected: false,
   loading: false,
+  savedContents: [],
 
   // Auth actions
   setUser: (user) => set({ 
@@ -141,5 +160,22 @@ export const useStore = create<StoreState>((set, get) => ({
   })),
 
   setConnectionStatus: (status) => set({ isConnected: status }),
-  setLoading: (loading) => set({ loading })
+  setLoading: (loading) => set({ loading }),
+
+  // Content Management actions
+  setSavedContents: (contents) => set({ savedContents: contents }),
+  
+  addSavedContent: (content) => set((state) => ({
+    savedContents: [content, ...state.savedContents]
+  })),
+  
+  updateSavedContent: (id, updates) => set((state) => ({
+    savedContents: state.savedContents.map(content => 
+      content.id === id ? { ...content, ...updates } : content
+    )
+  })),
+  
+  removeSavedContent: (id) => set((state) => ({
+    savedContents: state.savedContents.filter(content => content.id !== id)
+  }))
 }));
