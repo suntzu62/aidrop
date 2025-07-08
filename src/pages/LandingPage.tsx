@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   Zap, 
@@ -29,8 +29,14 @@ import {
   ChevronRight,
   Play
 } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import AuthForm from '../components/AuthForm';
 
 const LandingPage = () => {
+  const { isAuthenticated, user } = useAuth();
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
+  const [authMode, setAuthMode] = React.useState<'login' | 'signup'>('login');
+
   // Platform logos for social proof
   const platformLogos = [
     { name: 'Mercado Livre', color: 'text-yellow-600' },
@@ -223,8 +229,8 @@ const LandingPage = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <Link
                 to="/generator"
@@ -239,7 +245,25 @@ const LandingPage = () => {
               >
                 <BarChart3 className="ml-2 w-5 h-5 mr-2" />
                 Ver Plataforma
-              </Link>
+              </Link>              
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="mt-4 mb-12"
+            >
+              <button
+                onClick={() => {
+                  setAuthMode('login');
+                  setShowAuthModal(true);
+                }}
+                className="inline-flex items-center text-primary-600 font-medium hover:text-primary-700"
+              >
+                {isAuthenticated ? 'Minha Conta' : 'Já tem uma conta? Faça Login'}
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </button>
             </motion.div>
 
             {/* Workflow Visual Preview */}
@@ -597,7 +621,19 @@ const LandingPage = () => {
           </motion.div>
         </div>
       </section>
-    </div>
+
+      {/* Auth Modal */}
+      <AnimatePresence>
+        {showAuthModal && (
+          <AuthForm 
+            isOpen={showAuthModal} 
+            onClose={() => setShowAuthModal(false)} 
+            defaultMode={authMode} 
+            onSuccess={() => setShowAuthModal(false)}
+          />
+        )}
+      </AnimatePresence>
+    </div> 
   );
 };
 
