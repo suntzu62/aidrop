@@ -9,6 +9,9 @@ import {
   Sparkles,
   Check
 } from 'lucide-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { marked } from 'marked';
 
 interface ProductDescriptionGeneratorProps {
   freeUsesRemaining: number;
@@ -36,6 +39,7 @@ const ProductDescriptionGenerator: React.FC<ProductDescriptionGeneratorProps> = 
   const [isGenerating, setIsGenerating] = useState(false);
   const [displayPrice, setDisplayPrice] = useState('');
   const [showGeneratedContent, setShowGeneratedContent] = useState(false);
+  const [quillValue, setQuillValue] = useState('');
 
   const platforms = [
     'Mercado Livre',
@@ -59,6 +63,29 @@ const ProductDescriptionGenerator: React.FC<ProductDescriptionGeneratorProps> = 
     'Brinquedos',
     'Saúde'
   ];
+
+  // Configure Quill editor modules and formats
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link'],
+      ['clean']
+    ],
+  };
+  
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet',
+    'link'
+  ];
+
+  // Function to handle changes in the Quill editor
+  const handleEditorChange = (content: string) => {
+    setQuillValue(content);
+  };
 
   const formatPrice = (value: string): string => {
     const numbers = value.replace(/\D/g, '');
@@ -156,7 +183,10 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
 **👆 CLIQUE EM "COMPRAR AGORA" E GARANTE O SEU!**
       `.trim();
       
-      setGeneratedDescription(mockDescription);
+      // Convert markdown to HTML
+      const htmlContent = marked.parse(mockDescription.trim());
+      setGeneratedDescription(mockDescription.trim()); // Keep original markdown
+      setQuillValue(htmlContent); // Set HTML version for the editor
       setShowGeneratedContent(true); // Show generated content view
       setIsGenerating(false);
 
@@ -170,7 +200,9 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedDescription);
+    // Get content from either the Quill editor (HTML) or the original generated description
+    const contentToCopy = showGeneratedContent ? quillValue : generatedDescription;
+    navigator.clipboard.writeText(contentToCopy);
   };
 
   // Function to go back to form view
@@ -333,7 +365,7 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
           /* Generated Content View */
           <div className="max-w-4xl mx-auto">
             {/* Generated Description */}
-            <div className="bg-white p-8 rounded-xl border border-gray-200 mb-6">
+            <div className="bg-white p-4 rounded-xl border border-gray-200 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-gray-900">Sua Descrição Otimizada</h3>
                 <div className="flex space-x-2">
@@ -353,10 +385,14 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
                 </div>
               </div>
               
-              <div className="prose max-w-none">
-                <pre className="whitespace-pre-wrap text-sm text-gray-700 font-mono bg-gray-50 p-6 rounded-lg">
-                  {generatedDescription}
-                </pre>
+              <div className="rich-text-editor-container">
+                <ReactQuill 
+                  value={quillValue} 
+                  onChange={handleEditorChange}
+                  modules={modules}
+                  formats={formats}
+                  theme="snow"
+                />
               </div>
             </div>
 
@@ -367,7 +403,7 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
                 <span className="font-medium">Descrição otimizada criada com sucesso!</span>
               </div>
               <p className="text-sm text-green-600 mt-1">
-                Esta descrição foi otimizada para SEO e conversão em plataformas de e-commerce.
+                Esta descrição foi otimizada para SEO e conversão em plataformas de e-commerce. Você pode editá-la diretamente no editor acima.
               </p>
             </div>
 

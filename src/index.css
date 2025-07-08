@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Rich Text Editor Styles */
+.rich-text-editor-container .ql-container {
+  @apply min-h-[300px] max-h-[500px] overflow-auto text-gray-700 text-sm;
+}
+
+.rich-text-editor-container .ql-toolbar {
+  @apply bg-gray-50 border border-gray-300 rounded-t-lg;
+}
+
+.rich-text-editor-container .ql-editor {
+  @apply bg-white border-x border-b border-gray-300 rounded-b-lg min-h-[300px] prose max-w-none;
+}
+
+.rich-text-editor-container .ql-editor h1 {
+  @apply text-2xl font-bold mb-4;
+}
+
+.rich-text-editor-container .ql-editor h2 {
+  @apply text-xl font-bold mb-3;
+}
+
+.rich-text-editor-container .ql-editor h3 {
+  @apply text-lg font-bold mb-2;
+}
+
+.rich-text-editor-container .ql-editor p {
+  @apply mb-4;
+}
+
+.rich-text-editor-container .ql-editor ul, 
+.rich-text-editor-container .ql-editor ol {
+  @apply mb-4 pl-5;
+}
+
+.rich-text-editor-container .ql-editor li {
+  @apply mb-1;
+}
+
+.rich-text-editor-container .ql-editor strong {
+  @apply font-bold;
+}
+
+.rich-text-editor-container .ql-editor em {
+  @apply italic;
+}
