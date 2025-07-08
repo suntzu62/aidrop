@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUp, ArrowDown, LucideIcon } from 'lucide-react';
+import { ArrowUp, ArrowDown, DivideIcon as LucideIcon } from 'lucide-react';
 
 interface MetricCardProps {
   title: string;
