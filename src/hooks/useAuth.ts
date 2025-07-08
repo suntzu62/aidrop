@@ -122,6 +122,32 @@ export const useAuth = () => {
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      setAuthLoading(true);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}`
+        }
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return { success: false, error };
+      }
+
+      // Note: This won't immediately have user data as it redirects to Google
+      return { success: true, data };
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      toast.error('Erro ao fazer login com Google');
+      return { success: false, error };
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       setAuthLoading(true);
@@ -195,6 +221,7 @@ export const useAuth = () => {
     authLoading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
     resetPassword,
     updatePassword,

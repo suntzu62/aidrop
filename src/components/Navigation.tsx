@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package, Plus, Mic, BookOpen } from 'lucide-react';
+import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package, Plus, Mic, BookOpen, User, LogOut } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import AuthForm from './AuthForm';
+import toast from 'react-hot-toast';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, signOut, user } = useAuth();
   
   const navItems = [
     { path: '/', label: 'Início', icon: ShoppingCart },
@@ -17,6 +22,13 @@ const Navigation = () => {
     { path: '/advanced', label: 'Avançado', icon: Zap },
     { path: '/content-library', label: 'Biblioteca', icon: BookOpen },
   ];
+
+  const handleLogout = async () => {
+    const result = await signOut();
+    if (result.success) {
+      toast.success('Logout realizado com sucesso!');
+    }
+  };
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
@@ -52,9 +64,30 @@ const Navigation = () => {
                 </Link>
               );
             })}
-            <button className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors">
-              Começar Grátis
-            </button>
+            {isAuthenticated ? (
+              <div className="flex items-center">
+                <div className="mr-4">
+                  <div className="flex items-center space-x-2 text-sm text-gray-700">
+                    <User className="w-4 h-4" />
+                    <span className="font-medium">{user?.user_metadata?.name || user?.email?.split('@')[0]}</span>
+                  </div>
+                </div>
+                <button 
+                  onClick={handleLogout} 
+                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
+                >
+                  <LogOut className="w-4 h-4 mr-1" />
+                  Sair
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setShowAuthModal(true)} 
+                className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"
+              >
+                Entrar / Cadastrar
+              </button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -95,12 +128,45 @@ const Navigation = () => {
                 </Link>
               );
             })}
-            <button className="w-full mt-4 bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors">
-              Começar Grátis
-            </button>
+            {isAuthenticated ? (
+              <div className="w-full mt-4 space-y-2">
+                <div className="p-3 bg-gray-50 rounded-md flex items-center">
+                  <User className="w-4 h-4 mr-2 text-gray-600" />
+                  <span className="text-sm font-medium text-gray-700">
+                    {user?.user_metadata?.name || user?.email?.split('@')[0]}
+                  </span>
+                </div>
+                <button 
+                  onClick={handleLogout}
+                  className="w-full text-left p-3 text-red-600 hover:bg-red-50 rounded-md text-sm font-medium transition-colors flex items-center"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair da conta
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={() => {
+                  setShowAuthModal(true);
+                  setIsOpen(false);
+                }} 
+                className="w-full mt-4 bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"
+              >
+                Entrar / Cadastrar
+              </button>
+            )}
           </motion.div>
         )}
       </div>
+      
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <AuthForm 
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          onSuccess={() => setShowAuthModal(false)}
+        />
+      )}
     </nav>
   );
 };
