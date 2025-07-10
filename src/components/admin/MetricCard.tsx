@@ -60,7 +60,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, change, icon: Ico
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+      className="theme-card p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow"
     >
       <div className="flex items-center justify-between mb-4">
         <div className={`w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-r ${colorClasses.gradient}`}>
@@ -72,8 +72,8 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, change, icon: Ico
         </div>
       </div>
       <div>
-        <h3 className="text-sm font-medium text-gray-500 mb-1">{title}</h3>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <h3 className="text-sm font-medium text-opacity-70 mb-1">{title}</h3>
+        <p className="text-2xl font-bold">{value}</p>
       </div>
     </motion.div>
   );

@@ -138,14 +138,14 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen flex">
       {/* Sidebar */}
       <motion.div 
         initial={{ x: -300 }}
         animate={{ x: sidebarOpen ? 0 : -300 }}
-        className={`bg-white h-screen fixed top-0 left-0 w-64 shadow-lg transition-all z-20`}
+        className={`theme-sidebar h-screen fixed top-0 left-0 w-64 shadow-lg transition-all z-20`}
       >
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-accent-500 rounded-lg flex items-center justify-center">
@@ -185,10 +185,10 @@ const AdminDashboard = () => {
           </nav>
         </div>
         
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200">
+        <div className="absolute bottom-0 left-0 right-0 p-6 border-t">
           <button 
             onClick={handleLogout}
-            className="flex items-center space-x-3 text-gray-600 hover:text-gray-900 transition-colors w-full"
+            className="flex items-center space-x-3 transition-colors w-full text-opacity-80 hover:text-opacity-100"
           >
             <LogOut className="w-5 h-5" />
             <span>Sair</span>
@@ -199,11 +199,11 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className={`flex-1 ${sidebarOpen ? 'ml-64' : 'ml-0'} transition-all`}>
         {/* Topbar */}
-        <div className="bg-white shadow-sm border-b border-gray-200 py-4 px-6 sticky top-0 z-10">
+        <div className="theme-header shadow-sm border-b py-4 px-6 sticky top-0 z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button 
-                className="text-gray-500 hover:text-gray-700 hidden md:block"
+                className="text-opacity-70 hover:text-opacity-100 hidden md:block"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
               >
                 <Menu className="w-6 h-6" />
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
                 <input
                   type="text"
                   placeholder="Buscar..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 theme-input rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -245,8 +245,8 @@ const AdminDashboard = () => {
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Bem-vindo de volta, {user?.email?.split('@')[0] || 'Admin'}</p>
+              <h1 className="text-2xl md:text-3xl font-bold">Dashboard</h1>
+              <p className="text-opacity-70">Bem-vindo de volta, {user?.email?.split('@')[0] || 'Admin'}</p>
             </div>
             
             <div className="flex items-center space-x-4">
@@ -260,7 +260,7 @@ const AdminDashboard = () => {
                     className={`px-4 py-2 text-sm rounded-lg transition-colors ${
                       activeFilter === filter 
                         ? 'bg-primary-600 text-white' 
-                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                        : 'theme-card hover:theme-hover'
                     }`}
                   >
                     {filter === 'today' ? 'Hoje' 
