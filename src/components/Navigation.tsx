@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package, Plus, Mic, BookOpen, User, LogOut } from 'lucide-react';
+import { ShoppingCart, BarChart3, Sparkles, Menu, X, Zap, Package, Plus, Mic, BookOpen, User, LogOut, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import AuthForm from './AuthForm';
 import toast from 'react-hot-toast';
+import ThemeToggle from './ThemeToggle';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +32,10 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+    <nav className="backdrop-blur-md border-b sticky top-0 z-50" style={{
+      backgroundColor: 'rgb(var(--color-background-secondary) / 0.8)',
+      borderColor: 'rgb(var(--color-border))'
+    }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -67,6 +71,9 @@ const Navigation = () => {
             {isAuthenticated ? (
               <div className="flex items-center">
                 <div className="mr-4">
+                  <ThemeToggle />
+                </div>
+                <div className="mr-4">
                   <div className="flex items-center space-x-2 text-sm text-gray-700">
                     <User className="w-4 h-4" />
                     <span className="font-medium">{user?.user_metadata?.name || user?.email?.split('@')[0]}</span>
@@ -81,6 +88,7 @@ const Navigation = () => {
                 </button>
               </div>
             ) : (
+              <ThemeToggle />
               <button 
                 onClick={() => setShowAuthModal(true)} 
                 className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"

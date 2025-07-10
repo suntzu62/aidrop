@@ -2,17 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Light theme colors */
+  --color-background: 249 250 251; /* bg-gray-50 */
+  --color-background-secondary: 255 255 255; /* white */
+  --color-text-primary: 17 24 39; /* text-gray-900 */
+  --color-text-secondary: 107 114 128; /* text-gray-500 */
+  --color-border: 229 231 235; /* border-gray-200 */
+  --color-shadow: 0 0 0 0.1;
+}
+
+.dark {
+  /* Dark theme colors */
+  --color-background: 17 24 39; /* bg-gray-900 */
+  --color-background-secondary: 31 41 55; /* bg-gray-800 */
+  --color-text-primary: 243 244 246; /* text-gray-100 */
+  --color-text-secondary: 156 163 175; /* text-gray-400 */
+  --color-border: 55 65 81; /* border-gray-700 */
+  --color-shadow: 0 0 0 0.1;
+}
+
+/* Apply variables to elements */
+body {
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-text-primary));
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* Rich Text Editor Styles */
 .rich-text-editor-container .ql-container {
   @apply min-h-[300px] max-h-[500px] overflow-auto text-gray-700 text-sm;
 }
 
 .rich-text-editor-container .ql-toolbar {
-  @apply bg-gray-50 border border-gray-300 rounded-t-lg;
+  @apply border rounded-t-lg;
+  background-color: rgb(var(--color-background-secondary));
+  border-color: rgb(var(--color-border));
 }
 
 .rich-text-editor-container .ql-editor {
-  @apply bg-white border-x border-b border-gray-300 rounded-b-lg min-h-[300px] prose max-w-none;
+  @apply border-x border-b rounded-b-lg min-h-[300px] prose max-w-none;
+  background-color: rgb(var(--color-background-secondary));
+  border-color: rgb(var(--color-border));
 }
 
 .rich-text-editor-container .ql-editor h1 {

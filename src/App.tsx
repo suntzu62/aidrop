@@ -18,15 +18,17 @@ import Navigation from './components/Navigation';
 
 function App() {
   // Initialize auth listener
-  const { authLoading } = useAuth();
+  const { authLoading } = useAuth(); 
 
   // Show loading screen while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{
+        background: 'linear-gradient(to bottom right, rgb(var(--color-background)), rgb(var(--color-background-secondary)))'
+      }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
+          <p style={{ color: 'rgb(var(--color-text-secondary))' }}>Carregando...</p>
         </div>
       </div>
     );
@@ -34,7 +36,9 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen" style={{
+        background: 'linear-gradient(to bottom right, rgb(var(--color-background)), rgb(var(--color-background-secondary)))'
+      }}>
         <Navigation />
         <motion.main
           initial={{ opacity: 0 }}
