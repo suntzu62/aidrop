@@ -116,17 +116,19 @@ const ProductDescriptionGenerator: React.FC<ProductDescriptionGeneratorProps> = 
 
   const handleGenerate = async () => {
     // Check if user needs onboarding before generating
-    if (!isOnboardingComplete && freeUsesRemaining === 0) {
-      onShowOnboarding();
-      return;
-    }
+    // Temporariamente removido para permitir acesso sem cadastro
+    // if (!isOnboardingComplete && freeUsesRemaining === 0) {
+    //   onShowOnboarding();
+    //   return;
+    // }
 
     setIsGenerating(true);
     
-    let newUsesRemaining = freeUsesRemaining;
-    if (!isOnboardingComplete) {
-      newUsesRemaining = await consumeFreeUse();
-    }
+    // Comentando temporariamente
+    // let newUsesRemaining = freeUsesRemaining;
+    // if (!isOnboardingComplete) {
+    //   newUsesRemaining = await consumeFreeUse();
+    // }
     
     setTimeout(() => {
       const mockDescription = `
@@ -199,12 +201,12 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
       setShowGeneratedContent(true); // Show generated content view
       setIsGenerating(false);
 
-      // If user exhausted free uses, show onboarding after a delay
-      if (!isOnboardingComplete && newUsesRemaining === 0) {
-        setTimeout(() => {
-          onShowOnboarding();
-        }, 3000);
-      }
+      // Comentado temporariamente
+      // if (!isOnboardingComplete && newUsesRemaining === 0) {
+      //   setTimeout(() => {
+      //     onShowOnboarding();
+      //   }, 3000);
+      // }
     }, 2000);
   };
 
@@ -381,15 +383,11 @@ ${productData.keywords ? `**Tags:** ${productData.keywords}` : ''}
                     <Zap className="w-5 h-5 mr-2" />
                   </motion.div>
                 ) : !isOnboardingComplete && freeUsesRemaining === 0 ? (
-                  <>
-                    <Lock className="w-5 h-5 mr-2" />
-                    Complete o Cadastro
-                  </>
+                  <Zap className="w-5 h-5 mr-2" />
                 ) : (
                   <Zap className="w-5 h-5 mr-2" />
                 )}
                 {isGenerating ? 'Gerando Descrição...' : 
-                 !isOnboardingComplete && freeUsesRemaining === 0 ? 'Complete o Cadastro' :
                  'Gerar Descrição'}
               </button>
             </div>
