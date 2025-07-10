@@ -199,38 +199,6 @@ const ContentStudio = () => {
             Crie conteúdo de alta conversão para qualquer canal de marketing com nossa IA especializada em vendas e engajamento
           </p>
 
-          {/* Free Trial Banner */}
-          {!isOnboardingComplete && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 max-w-lg mx-auto"
-            >
-              <div className="flex items-center justify-center mb-2">
-                <Gift className="w-6 h-6 text-green-600 mr-3" />
-                <span className="text-green-800 font-semibold text-lg">
-                  {freeUsesRemaining > 0 
-                    ? `${freeUsesRemaining} teste${freeUsesRemaining !== 1 ? 's' : ''} gratuito${freeUsesRemaining !== 1 ? 's' : ''} restante${freeUsesRemaining !== 1 ? 's' : ''}` 
-                    : 'Teste gratuito usado'}
-                </span>
-              </div>
-              <p className="text-sm text-green-700">
-                {freeUsesRemaining > 0 
-                  ? 'Experimente qualquer ferramenta gratuitamente'
-                  : 'Complete seu cadastro para acesso ilimitado a todas as ferramentas'
-                }
-              </p>
-              <div className="mt-4 pt-4 border-t border-green-200">
-                <Link
-                  to="/brand-voice"
-                  className="text-sm text-green-700 hover:text-green-800 font-medium flex items-center"
-                >
-                  <Sparkles className="w-4 h-4 mr-1" />
-                  Configure sua Voz da Marca para resultados ainda melhores
-                </Link>
-              </div>
-            </motion.div>
-          )}
         </motion.div>
 
         <div className="grid lg:grid-cols-4 gap-8">
