@@ -49,7 +49,8 @@ const ContentStudio = () => {
   // Check if user should see onboarding form
   useEffect(() => {
     if (!onboardingLoading) {
-      setShowOnboardingForm(!isOnboardingComplete && freeUsesRemaining === 0);
+      // Não mostrar formulário de onboarding por enquanto
+      setShowOnboardingForm(false);
     }
   }, [isOnboardingComplete, onboardingLoading]);
 
@@ -150,15 +151,15 @@ const ContentStudio = () => {
     }
   };
 
-  // Show onboarding form if needed
-  if (showOnboardingForm) {
-    return (
-      <OnboardingForm 
-        onSubmit={handleOnboardingSubmit}
-        loading={onboardingLoading}
-      />
-    );
-  }
+  // Comentado temporariamente para não mostrar o formulário de onboarding
+  // if (showOnboardingForm) {
+  //   return (
+  //     <OnboardingForm 
+  //       onSubmit={handleOnboardingSubmit}
+  //       loading={onboardingLoading}
+  //     />
+  //   );
+  // }
 
   // Show loading state
   if (onboardingLoading) {
@@ -276,23 +277,16 @@ const ContentStudio = () => {
               <div className="mt-8 p-4 bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl border border-primary-100">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Uso Hoje</span>
-                  <span className="text-sm text-primary-600 font-semibold">
-                    {isOnboardingComplete ? '∞' : `${1 - freeUsesRemaining}/1`}
-                  </span>
+                  <span className="text-sm text-primary-600 font-semibold">∞</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
                     className="bg-gradient-to-r from-primary-500 to-accent-500 h-2 rounded-full transition-all"
-                    style={{ 
-                      width: isOnboardingComplete ? '100%' : `${((1 - freeUsesRemaining) / 1) * 100}%` 
-                    }}
+                    style={{ width: '100%' }}
                   ></div>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  {isOnboardingComplete 
-                    ? 'Acesso ilimitado ativo' 
-                    : 'Complete o cadastro para uso ilimitado'
-                  }
+                  Acesso ilimitado ativo
                 </p>
               </div>
             </div>
