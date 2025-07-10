@@ -171,7 +171,7 @@ const DataTable: React.FC<DataTableProps> = ({
     <div className="overflow-hidden rounded-lg">
       {/* Search and Filter Bar */}
       {(searchable || filters.length > 0) && (
-        <div className="bg-gray-50 border-b border-gray-200 p-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="theme-input border-b p-4 flex flex-wrap items-center justify-between gap-4">
           {searchable && (
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -180,7 +180,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 placeholder="Buscar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full md:w-80"
+                className="pl-10 pr-4 py-2 theme-card border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full md:w-80"
               />
             </div>
           )}
@@ -191,7 +191,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 <select
                   value={activeFilters[filter.key] || ''}
                   onChange={(e) => handleFilterChange(filter.key, e.target.value)}
-                  className="pl-3 pr-8 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none"
+                  className="pl-3 pr-8 py-2 theme-card border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none"
                 >
                   <option value="">Todos</option>
                   {filter.options.map((option) => (
@@ -211,11 +211,11 @@ const DataTable: React.FC<DataTableProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full text-left table-auto">
           <thead>
-            <tr className="bg-gray-50">
+            <tr className="theme-input">
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                  className="px-6 py-3 text-left text-xs font-medium text-opacity-70 uppercase tracking-wider cursor-pointer hover:theme-hover transition-colors"
                   onClick={() => handleSort(column.key)}
                 >
                   <div className="flex items-center space-x-1">
@@ -234,7 +234,7 @@ const DataTable: React.FC<DataTableProps> = ({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="theme-card divide-y">
             {paginatedData.length > 0 ? (
               paginatedData.map((row, rowIndex) => (
                 <motion.tr 
@@ -242,10 +242,10 @@ const DataTable: React.FC<DataTableProps> = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: rowIndex * 0.03 }}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:theme-hover transition-colors"
                 >
                   {columns.map((column) => (
-                    <td key={`${rowIndex}-${column.key}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <td key={`${rowIndex}-${column.key}`} className="px-6 py-4 whitespace-nowrap text-sm">
                       {column.key === 'status' ? (
                         <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusStyles(row[column.key])}`}>
                           {row[column.key]}
@@ -261,7 +261,7 @@ const DataTable: React.FC<DataTableProps> = ({
               <tr>
                 <td 
                   colSpan={columns.length} 
-                  className="px-6 py-10 text-center text-gray-500"
+                  className="px-6 py-10 text-center text-opacity-70"
                 >
                   Nenhum dado encontrado
                 </td>
@@ -273,15 +273,15 @@ const DataTable: React.FC<DataTableProps> = ({
 
       {/* Pagination */}
       {pagination && totalPages > 1 && (
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-          <div className="text-sm text-gray-700">
+        <div className="px-6 py-4 theme-input border-t flex items-center justify-between">
+          <div className="text-sm text-opacity-80">
             Mostrando {((currentPage - 1) * itemsPerPage) + 1} a {Math.min(currentPage * itemsPerPage, filteredData.length)} de {filteredData.length} resultados
           </div>
           <div className="flex items-center space-x-2">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="p-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-md border theme-card hover:theme-hover disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -297,7 +297,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   className={`w-8 h-8 rounded-md ${
                     isActive 
                       ? 'bg-primary-600 text-white' 
-                      : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
+                      : 'theme-card border hover:theme-hover'
                   }`}
                 >
                   {pageNumber}
@@ -308,7 +308,7 @@ const DataTable: React.FC<DataTableProps> = ({
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="p-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-md border theme-card hover:theme-hover disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
